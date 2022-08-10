@@ -33,44 +33,62 @@ function App() {
 	const [leftData, setLeftData] = React.useState<any>({})
 	const [streams, setStreams] = React.useState<{ ok?: IStreamsInfo[], other?: IStreamsInfo[], freeze?: IStreamsInfo[] }>({})
 
-	socket.on('activate', () => {
-		socket.emit('web')
-	})
-
-	socket.on('webActivate', () => {
-		setInterval(() => {
-			socket.emit('getAllData')
-			socket.emit('getPlayerInfos')
-		}, 5 * 1000)
-	})
-
-	socket.on('allData', d => {
-		const {
-			numbers,
-			numbersPlaying,
-			errs,
-			resultRatio,
-			parentsMax,
-			...leftData
-		} = d
-
-		setData({
-			numbers,
-			numbersPlaying,
-			errs,
-			resultRatio,
-			parentsMax,
+	React.useEffect(()=>{
+		socket.on('activate', () => {
+			socket.emit('web')
+		})
+	
+		socket.on('webActivate', () => {
+			setInterval(() => {
+				socket.emit('getAllData')
+				socket.emit('getPlayerInfos')
+			}, 5 * 1000)
+		})
+	
+		socket.on('allData', d => {
+			const {
+				numbers,
+				numbersPlaying,
+				errs,
+				resultRatio,
+				parentsMax,
+				...leftData
+			} = d
+	
+			setData({
+				numbers,
+				numbersPlaying,
+				errs,
+				resultRatio,
+				parentsMax,
+			})
+	
+			setLeftData(leftData)
+	
+			for (let key in errs) {
+				const errors = errs[key]
+				for (let error in errors) {
+					const nbError = errors[error]
+					// document.querySelector('#errs').insertAdjacentHTML('beforeend', `<span>${key} ${error} => ${nbError}</span>`)
+				}
+			}
 		})
 
-		setLeftData(leftData)
-
-		for (let key in errs) {
-			const errors = errs[key]
-			for (let error in errors) {
-				const nbError = errors[error]
-				// document.querySelector('#errs').insertAdjacentHTML('beforeend', `<span>${key} ${error} => ${nbError}</span>`)
+		socket.on('playerInfos', (streams: IStreamsInfo[]) => {
+			const replace = (key: string, curr: any, prev: any) => {
+				return curr['ok'] ? [...prev['ok'], curr['ok']] : prev['ok']
 			}
-		}
+	
+			const filter = streams.reduce((prev, curr) => {
+				return {
+					ok: replace('ok', curr, prev),
+					other: replace('other', curr, prev),
+					freeze: replace('freeze', curr, prev),
+				}
+			}, { ok: [], other: [], freeze: [] })
+	
+			setStreams(filter)
+		})
 	})
 
 	const updateAccounts = () => {
@@ -177,22 +195,6 @@ function App() {
 		// else {
 		// 	isDom.src = 'data:image/png;base64,' + img
 		// }
-	})
-
-	socket.on('playerInfos', (streams: IStreamsInfo[]) => {
-		const replace = (key: string, curr: any, prev: any) => {
-			return curr['ok'] ? [...prev['ok'], curr['ok']] : prev['ok']
-		}
-
-		const filter = streams.reduce((prev, curr) => {
-			return {
-				ok: replace('ok', curr, prev),
-				other: replace('other', curr, prev),
-				freeze: replace('freeze', curr, prev),
-			}
-		}, { ok: [], other: [], freeze: [] })
-
-		setStreams(filter)
 	})
 
 	const displayPlays = (streams: IStreamsInfo[]) => {
