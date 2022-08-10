@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const {
 	getCheckAccounts,
 	getAccount,
@@ -435,7 +436,9 @@ try {
 			client.emit('webActivate', client.id)
 		})
 
-		client.emit('activate', client.id)
+		setTimeout(() => {
+			client.emit('activate', client.id)
+		}, 5000);
 	});
 } catch (e) {
 	console.log('ERROR', e)
