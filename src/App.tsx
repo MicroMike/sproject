@@ -76,7 +76,7 @@ function App() {
 
 		socket.on('playerInfos', (streams: IStreamsInfo[]) => {
 			const replace = (key: string, curr: any, prev: any) => {
-				return curr['ok'] ? [...prev['ok'], curr['ok']] : prev['ok']
+				return curr[key] ? [...prev[key], curr[key]] : prev[key]
 			}
 
 			const filter = streams.reduce((prev, curr) => {
