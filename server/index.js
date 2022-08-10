@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 const {
 	getCheckAccounts,
 	getAccount,
@@ -8,18 +7,16 @@ const {
 const routes = require('./routes')
 const { wait } = require('./helpers')
 
-// const fs = require('fs');
-// const path = require("path");
 const express = require("express");
 const mongoose = require('mongoose');
+const { Server } = require("socket.io");
 
 const app = express(); // create express app
 app.use(express.static("build"));
+
 const http = require('http').Server(routes(app));
 
-const io = require('socket.io')(http, {
-	pingTimeout: 1000 * 60 * 5
-});
+const io = new Server(http);
 
 // MongoDB Connection
 mongoose.connect(
@@ -49,7 +46,6 @@ let parents = {}
 let webs = {}
 let used = {}
 let errs = []
-let playerCount
 
 actions('gain', body => {
 	const r = body.g
