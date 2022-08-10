@@ -245,7 +245,7 @@ try {
 		})
 
 		client.on('time', datas => {
-			if (time > client.time) {
+			if (time > client.infos.time) {
 				client.pauseCount = 0
 
 				client.infos = {
@@ -258,7 +258,7 @@ try {
 					client.next = true
 					++client.infos.countPlays
 				}
-			} else if (time < client.time) {
+			} else if (time < client.infos.time) {
 				client.next = false
 			} else {
 				++client.pauseCount
@@ -266,7 +266,7 @@ try {
 				client.infos = {
 					...datas,
 					freeze: true,
-					warn: true,
+					warn: client.pauseCount < 3,
 					countPlays: client.infos.countPlays
 				}
 			}
