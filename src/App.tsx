@@ -1,0 +1,285 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React from 'react';
+import './App.css';
+import io from 'socket.io-client';
+
+var socket = io();
+
+interface IData {
+	numbers?: any
+	numbersPlaying?: any
+	errs?: any
+	resultRatio?: any
+	parentsMax?: any
+}
+
+interface IStreamsInfo {
+	account?: any
+	time?: any
+	streamId?: any
+	freeze?: any
+	other?: any
+	out?: any
+	ok?: any
+	nope?: any
+	warn?: any
+	countPlays?: any
+	code?: any
+	parentId?: any
+}
+
+function App() {
+	const [data, setData] = React.useState<IData>({})
+	const [leftData, setLeftData] = React.useState<any>({})
+	const [streams, setStreams] = React.useState<{ ok?: IStreamsInfo[], other?: IStreamsInfo[], freeze?: IStreamsInfo[] }>({})
+
+	socket.on('activate', () => {
+		socket.emit('web')
+	})
+
+	socket.on('webActivate', () => {
+		setInterval(() => {
+			socket.emit('getAllData')
+			socket.emit('getPlayerInfos')
+		}, 5 * 1000)
+	})
+
+	socket.on('allData', d => {
+		const {
+			numbers,
+			numbersPlaying,
+			errs,
+			resultRatio,
+			parentsMax,
+			...leftData
+		} = d
+
+		setData({
+			numbers,
+			numbersPlaying,
+			errs,
+			resultRatio,
+			parentsMax,
+		})
+
+		setLeftData(leftData)
+
+		for (let key in errs) {
+			const errors = errs[key]
+			for (let error in errors) {
+				const nbError = errors[error]
+				// document.querySelector('#errs').insertAdjacentHTML('beforeend', `<span>${key} ${error} => ${nbError}</span>`)
+			}
+		}
+	})
+
+	const updateAccounts = () => {
+		socket.emit('updateAccounts')
+	}
+
+	const screenshot = (id: string) => {
+		socket.emit('screenshot', id)
+	}
+
+	const clearData = () => {
+		socket.emit('clearData')
+	}
+
+	const restart = (id?: string) => {
+		// document.querySelector('#errs').innerHTML = ''
+		// document.querySelector('.screenshot').innerHTML = ''
+		// document.querySelector('.players').innerHTML = ''
+		// document.querySelector('.freezedPlayers').innerHTML = ''
+		// document.querySelector('.others').innerHTML = ''
+		// document.querySelector('.codes').innerHTML = ''
+		socket.emit('restart', id)
+	}
+
+	const killall = (id?: string) => {
+		socket.emit('killall', id)
+	}
+
+	const kill = (id = null) => {
+		socket.emit('kill', id)
+	}
+
+	const stop = (id = null) => {
+		socket.emit('stop', id)
+	}
+
+	const spotifyPause = () => {
+		socket.emit('spotifyPause')
+	}
+
+	const clearScreen = () => {
+		// document.querySelector('.screenshot').innerHTML = ''
+		socket.emit('clearScreen')
+	}
+
+	const clearErrs = () => {
+		// document.querySelector('#errs').innerHTML = ''
+		socket.emit('clearErrs')
+	}
+
+	const check = () => {
+		socket.emit('check')
+	}
+
+	const endCheck = () => {
+		socket.emit('endCheck')
+	}
+
+	socket.on('endStream', streamId => {
+		// const isDom = streamId && document.querySelector('#class' + streamId)
+		// isDom && isDom.parentElement.remove()
+	})
+
+	const toggleBtn = (btn: any) => {
+		socket.emit(btn.innerText, btn.className)
+		btn.innerText = btn.innerText === 'streamOn' ? 'streamOff' : 'streamOn'
+	}
+
+	const runScript = (btn: any) => {
+		// const scriptText = document.querySelector('#script' + btn.className).value
+		// socket.emit('runScript', { streamId: btn.className, scriptText })
+	}
+
+	const runCode = (btn: any) => {
+		// const scriptText = document.querySelector('#scriptCode' + btn.className).value
+		// socket.emit('runCode', { id: btn.className, scriptText })
+	}
+
+	socket.on('clearStream', (delList) => {
+		// document.querySelector('#del').innerHTML = delList
+	})
+
+	socket.on('delList', (delList) => {
+		// document.querySelector('#del').innerHTML = delList
+	})
+
+	socket.on('stream', ({ streamOn, streamId, img, log }) => {
+		// const isDom = document.querySelector('#class' + streamId)
+		const streamBtn = streamOn ? 'streamOff' : 'streamOn'
+		const html = img
+			? `<div>
+										<h2>${log} :</h2>
+										<img id="class${streamId}" src="data:image/png;base64,${img}" />
+										<button id="btn${streamId}" class="${streamId}" onclick="toggleBtn(this)">${streamBtn}</button>
+										<textarea id="script${streamId}"></textarea>
+										<button id="btnScript${streamId}" class="${streamId}" onclick="runScript(this)">Run script</button>
+									</div>`
+			: `<div>
+										<h2>${log} :</h2>
+									</div>`
+		// if (!isDom) {
+		// document.querySelector('.screenshot').insertAdjacentHTML('beforeEnd', html)
+		// }
+		// else {
+		// 	isDom.src = 'data:image/png;base64,' + img
+		// }
+	})
+
+	socket.on('playerInfos', (streams: IStreamsInfo[]) => {
+		const replace = (key: string, curr: any, prev: any) => {
+			return curr['ok'] ? [...prev['ok'], curr['ok']] : prev['ok']
+		}
+
+		const filter = streams.reduce((prev, curr) => {
+			return {
+				ok: replace('ok', curr, prev),
+				other: replace('other', curr, prev),
+				freeze: replace('freeze', curr, prev),
+			}
+		}, { ok: [], other: [], freeze: [] })
+
+		setStreams(filter)
+	})
+
+	const displayPlays = (streams: IStreamsInfo[]) => {
+		return (
+			<>
+				{streams.map(({ streamId, freeze, time, warn, parentId, account, countPlays }) => {
+					return (
+						<div id={`players-${streamId}`} className={freeze ? 'freeze' : ''}>
+							<div style={{ width: `${time}%` }}></div>
+							<span style={{ color: `${(warn && 'orange') || (freeze && 'red')}` }}>{`${parentId} - ${account} : ${time}`}</span> ({countPlays || ''})
+							<button onClick={() => screenshot(streamId)}>V</button>
+							<button onClick={() => kill(streamId)}>K</button>
+						</div>
+					)
+				})}
+			</>
+		)
+	}
+
+	const displayByKey = (key: 'ok' | 'other' | 'freeze') => {
+		return displayPlays(streams[key] || [])
+	}
+
+	const displayData = () => {
+		return (
+			<>
+				{data.numbers && Object.entries(data.numbers).map(([k, v], i) => {
+					const val = v
+					const val2 = data.numbersPlaying[k]
+					const ratio = data.resultRatio[k]
+
+					return (
+						<span style={{ color: ratio < 0.5 ? 'orange' : 'black' }}>
+							{k} <br /> {'=>'} <br /> ({val}) <br /> {val2}/{data.parentsMax[k]} <br /> {'=>'} <br /> {ratio} <br />
+							<button id={`R_${k}`} onClick={() => restart(k)}>R</button>
+							<button id={`C_${k}`} onClick={() => killall(k)}>K</button>
+						</span>
+					)
+				})}
+			</>
+		)
+	}
+
+	const displayInfos = () => {
+		return (
+			<>
+				{Object.entries(leftData).forEach(([k, v]) => (
+					<div>{`${k} => ${v}`}</div>
+				))}
+			</>
+		)
+	}
+
+	return (
+		<div className="App">
+			<body>
+				<div id="servers">{displayData()}</div>
+				<div id="errs"></div>
+				<div id="data">{displayInfos()}</div>
+				<button onClick={() => restart()}>RESTART</button>
+				<button onClick={clearScreen}>CLEAR SCREENSHOT</button>
+				{/* <button onClick={clearErrs}>CLEAR ERRORS</button> */}
+				{/* <button onClick={getData}>GET DATA</button> */}
+				{/* <button onClick={updateAccounts}>UPDATE ACCOUNTS</button> */}
+				<div id="del"></div>
+				<div className="count"></div>
+				<div style={{ display: 'flex' }}>
+					<div id="players">
+						<div className="count">{streams.ok?.length}</div>
+						<div className="players">{displayByKey('ok')}</div>
+					</div>
+					<div id="freezedPlayers">
+						<div className="count">{streams.freeze?.length}</div>
+						<div className="freezedPlayers">{displayByKey('freeze')}</div>
+					</div>
+					<div id="others">
+						<div className="count">{streams.other?.length}</div>
+						<div className="others">{displayByKey('other')}</div>
+					</div>
+					<div>
+						<div className="codes"></div>
+					</div>
+				</div>
+				<div className="screenshot"></div>
+			</body>
+		</div>
+	);
+}
+
+export default App;
