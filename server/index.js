@@ -216,10 +216,12 @@ const isWaiting = async (props, client) => {
 try {
 	io.on('connect', client => {
 		client.on('isWaiting', async (props) => {
+			console.log('isWaiting')
 			await isWaiting(props, client)
 		})
 
 		client.on('client', async ({ parentId, streamId, account, max, back }) => {
+			console.log('client')
 			client.uniqId = streamId
 			client.parentId = parentId
 			client.account = account
