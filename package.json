@@ -21,6 +21,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+		"inst": "rm -rf node_modules/ && rm package-lock.json && npm i",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
