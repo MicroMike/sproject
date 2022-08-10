@@ -215,12 +215,10 @@ try {
 		console.log('connection')
 
 		client.on('isWaiting', async (props) => {
-			console.log('isWaiting')
 			await isWaiting(props, client)
 		})
 
 		client.on('client', async ({ parentId, streamId, account, max, back }) => {
-			console.log('client')
 			client.uniqId = streamId
 			client.parentId = parentId
 			client.account = account
@@ -336,21 +334,6 @@ try {
 			}
 		})
 
-		client.on('disconnect', why => {
-			client.account && actions('noUseAccount?' + client.account)
-
-			if (streams[client.uniqId]) {
-				usedAccounts = usedAccounts.filter(a => a !== client.account)
-				delete streams[client.uniqId]
-				const noMore = Object.values(streams).filter(s => s.parentId === client.parentId).length === 0
-				if (noMore) { delete parents[client.parentId] }
-			}
-
-			if (webs[client.id]) { delete webs[client.id] }
-
-			client.removeAllListeners()
-		})
-
 		client.on('web', () => {
 			webs[client.id] = client
 
@@ -432,6 +415,20 @@ try {
 			})
 
 			client.emit('webActivate', client.id)
+		})
+
+		client.on('disconnect', (why) => {
+			if (streams[client.uniqId]) {
+				console.log('disconect', client.account)
+				usedAccounts = usedAccounts.filter(a => a !== client.account)
+				delete streams[client.uniqId]
+				const noMore = Object.values(streams).filter(s => s.parentId === client.parentId).length === 0
+				if (noMore) { delete parents[client.parentId] }
+			}
+
+			if (webs[client.id]) { delete webs[client.id] }
+
+			client.removeAllListeners()
 		})
 
 		setTimeout(() => {

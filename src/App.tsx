@@ -79,19 +79,13 @@ function App() {
 				return curr[key] ? [...prev[key], curr] : prev[key]
 			}
 
-			console.log('streams', streams)
-
 			const filter = streams.reduce((prev, curr) => {
-				console.log('prev', prev)
-				console.log('curr', curr)
 				return {
 					ok: replace('ok', curr, prev),
 					other: replace('other', curr, prev),
 					freeze: replace('freeze', curr, prev),
 				}
 			}, { ok: [], other: [], freeze: [] })
-
-			console.log('filter', filter)
 
 			setStreams(filter)
 		})
