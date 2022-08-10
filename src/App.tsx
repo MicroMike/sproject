@@ -89,7 +89,7 @@ function App() {
 
 			setStreams(filter)
 		})
-	})
+	}, [])
 
 	React.useEffect(() => {
 		// console.log('data', data)
