@@ -435,6 +435,11 @@ try {
 			client.emit('activate', client.id)
 		}, 5000);
 	});
+
+	io.on('disconnect', client => {
+		console.log('disconnect')
+	})
+
 } catch (e) {
 	console.log('ERROR', e)
 }
