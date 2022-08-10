@@ -14,7 +14,7 @@ const { Server } = require("socket.io");
 const app = express(); // create express app
 app.use(express.static("build"));
 
-const http = require('http').Server(routes(app));
+const http = require('http').createServer(routes(app));
 
 const io = new Server(http);
 
