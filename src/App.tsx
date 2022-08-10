@@ -33,18 +33,18 @@ function App() {
 	const [leftData, setLeftData] = React.useState<any>({})
 	const [streams, setStreams] = React.useState<{ ok?: IStreamsInfo[], other?: IStreamsInfo[], freeze?: IStreamsInfo[] }>({})
 
-	React.useEffect(()=>{
+	React.useEffect(() => {
 		socket.on('activate', () => {
 			socket.emit('web')
 		})
-	
+
 		socket.on('webActivate', () => {
 			setInterval(() => {
 				socket.emit('getAllData')
 				socket.emit('getPlayerInfos')
 			}, 5 * 1000)
 		})
-	
+
 		socket.on('allData', d => {
 			const {
 				numbers,
@@ -54,7 +54,7 @@ function App() {
 				parentsMax,
 				...leftData
 			} = d
-	
+
 			setData({
 				numbers,
 				numbersPlaying,
@@ -62,9 +62,9 @@ function App() {
 				resultRatio,
 				parentsMax,
 			})
-	
+
 			setLeftData(leftData)
-	
+
 			for (let key in errs) {
 				const errors = errs[key]
 				for (let error in errors) {
@@ -78,7 +78,7 @@ function App() {
 			const replace = (key: string, curr: any, prev: any) => {
 				return curr['ok'] ? [...prev['ok'], curr['ok']] : prev['ok']
 			}
-	
+
 			const filter = streams.reduce((prev, curr) => {
 				return {
 					ok: replace('ok', curr, prev),
@@ -86,10 +86,16 @@ function App() {
 					freeze: replace('freeze', curr, prev),
 				}
 			}, { ok: [], other: [], freeze: [] })
-	
+
 			setStreams(filter)
 		})
 	})
+
+	React.useEffect(() => {
+		console.log('data', data)
+		console.log('leftData', leftData)
+		console.log('streams', streams)
+	}, [data, leftData, streams])
 
 	const updateAccounts = () => {
 		socket.emit('updateAccounts')
