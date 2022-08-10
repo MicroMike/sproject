@@ -212,8 +212,6 @@ const isWaiting = async (props, client) => {
 
 try {
 	io.on('connection', client => {
-		console.log('connection')
-
 		client.on('isWaiting', async (props) => {
 			await isWaiting(props, client)
 		})
@@ -419,14 +417,15 @@ try {
 
 		client.on('disconnect', (why) => {
 			if (streams[client.uniqId]) {
-				console.log('disconect', client.account)
 				usedAccounts = usedAccounts.filter(a => a !== client.account)
 				delete streams[client.uniqId]
 				const noMore = Object.values(streams).filter(s => s.parentId === client.parentId).length === 0
 				if (noMore) { delete parents[client.parentId] }
 			}
 
-			if (webs[client.id]) { delete webs[client.id] }
+			if (webs[client.id]) {
+				delete webs[client.id]
+			}
 
 			client.removeAllListeners()
 		})
@@ -435,11 +434,6 @@ try {
 			client.emit('activate', client.id)
 		}, 5000);
 	});
-
-	io.on('disconnect', client => {
-		console.log('disconnect')
-	})
-
 } catch (e) {
 	console.log('ERROR', e)
 }
