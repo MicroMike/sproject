@@ -216,6 +216,8 @@ const isWaiting = async (props, client) => {
 
 try {
 	io.on('connect', client => {
+		console.log('connect')
+
 		client.on('isWaiting', async (props) => {
 			console.log('isWaiting')
 			await isWaiting(props, client)
