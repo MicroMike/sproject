@@ -244,6 +244,47 @@ try {
 			console.log(log)
 		})
 
+		client.on('time', time => {
+			if (time > client.time) {
+				client.pauseCount = 0
+
+				client.infos = {
+					ok: true,
+					time,
+					countPlays: client.infos.countPlays
+				}
+
+				if (!client.next && time > 30) {
+					client.next = true
+					++client.infos.countPlays
+				}
+			} else if (time < client.time) {
+				client.next = false
+			} else {
+				++client.pauseCount
+
+				client.infos = {
+					freeze: true,
+					warn: true,
+					time,
+					countPlays: client.infos.countPlays
+				}
+			}
+		})
+
+		client.on('playerInfos', datas => {
+			if (datas.ok) {
+				delete imgs[datas.streamId];
+			}
+
+			if (streams[datas.streamId]) {
+				streams[datas.streamId].infos = { ...datas }
+			}
+			else {
+				streams[datas.streamId] = { uniqId: datas.streamId, parentId: datas.parentId, account: datas.account, infos: { ...datas } }
+			}
+		})
+
 		client.on('tidalError', ({ account }) => {
 			const checklive = Object.values(streams).find(({ parentId }) => parentId === 'checklive')
 			checklive && checklive.emit('mRun', { account })
@@ -317,19 +358,6 @@ try {
 					time = 0
 				}
 			})
-		})
-
-		client.on('playerInfos', datas => {
-			if (datas.ok) {
-				delete imgs[datas.streamId];
-			}
-
-			if (streams[datas.streamId]) {
-				streams[datas.streamId].infos = { ...datas }
-			}
-			else {
-				streams[datas.streamId] = { uniqId: datas.streamId, parentId: datas.parentId, account: datas.account, infos: { ...datas } }
-			}
 		})
 
 		client.on('web', () => {
