@@ -79,7 +79,11 @@ function App() {
 				return curr[key] ? [...prev[key], curr[key]] : prev[key]
 			}
 
+			console.log('streams', streams)
+
 			const filter = streams.reduce((prev, curr) => {
+				console.log('prev', prev)
+				console.log('curr', curr)
 				return {
 					ok: replace('ok', curr, prev),
 					other: replace('other', curr, prev),
@@ -87,14 +91,16 @@ function App() {
 				}
 			}, { ok: [], other: [], freeze: [] })
 
+			console.log('filter', filter)
+
 			setStreams(filter)
 		})
 	})
 
 	React.useEffect(() => {
-		console.log('data', data)
-		console.log('leftData', leftData)
-		console.log('streams', streams)
+		// console.log('data', data)
+		// console.log('leftData', leftData)
+		// console.log('streams', streams)
 	}, [data, leftData, streams])
 
 	const updateAccounts = () => {
