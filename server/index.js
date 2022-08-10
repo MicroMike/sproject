@@ -244,13 +244,13 @@ try {
 			console.log(log)
 		})
 
-		client.on('time', time => {
+		client.on('time', datas => {
 			if (time > client.time) {
 				client.pauseCount = 0
 
 				client.infos = {
+					...datas,
 					ok: true,
-					time,
 					countPlays: client.infos.countPlays
 				}
 
@@ -264,9 +264,9 @@ try {
 				++client.pauseCount
 
 				client.infos = {
+					...datas,
 					freeze: true,
 					warn: true,
-					time,
 					countPlays: client.infos.countPlays
 				}
 			}
