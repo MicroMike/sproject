@@ -442,6 +442,6 @@ try {
 	console.log('ERROR', e)
 }
 
-app.listen(3000, () => {
+http.listen(3000, () => {
 	console.log("server started on port 3000");
 });
