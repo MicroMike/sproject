@@ -26,7 +26,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "s": "npm run build && node server/index --trace-warnings"
+    "s": "npm run build && node --trace-warnings server/index"
   },
   "eslintConfig": {
     "extends": [
