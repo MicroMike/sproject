@@ -245,6 +245,8 @@ try {
 		})
 
 		client.on('time', datas => {
+			if (!client.infos) { return }
+
 			if (time > client.infos.time) {
 				client.pauseCount = 0
 
