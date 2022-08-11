@@ -272,6 +272,10 @@ try {
 					countPlays: client.infos.countPlays
 				}
 			}
+
+			if (client.infos.countPlays > 5) {
+				client.emit('out') // update to changeAlbum after test correct
+			}
 		})
 
 		client.on('playerInfos', datas => {
