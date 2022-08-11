@@ -276,7 +276,7 @@ try {
 				}
 			}
 
-			if (client.infos.countPlays > 5) {
+			if (client.infos.countPlays > 1) {
 				client.emit('out') // update to changeAlbum after test correct
 			}
 		})
