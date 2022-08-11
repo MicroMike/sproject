@@ -63,6 +63,7 @@ function App() {
 				parentsMax,
 			})
 
+			console.log('leftData', leftData)
 			setLeftData(leftData)
 
 			for (let key in errs) {
