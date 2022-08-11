@@ -452,7 +452,7 @@ try {
 			client.emit('webActivate', client.id)
 		})
 
-		client.on('disconnect', (why) => {
+		client.on('over', (why) => {
 			if (streams[client.uniqId]) {
 				usedAccounts = usedAccounts.filter(a => a !== client.account)
 				delete streams[client.uniqId]
@@ -465,6 +465,7 @@ try {
 			}
 
 			client.removeAllListeners()
+			client.disconnect()
 		})
 
 		setTimeout(() => {
