@@ -248,6 +248,7 @@ try {
 			if (!client.infos) { return }
 
 			if (isNaN(client.infos.time)) { client.infos.time = 0 }
+			if (isNaN(client.infos.countPlays)) { client.infos.countPlays = 0 }
 
 			if (time > client.infos.time) {
 				client.pauseCount = 0
