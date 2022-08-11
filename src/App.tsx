@@ -26,8 +26,6 @@ interface IStreamsInfo {
 	countPlays?: any
 	code?: any
 	parentId?: any
-	player?: any
-	login?: any
 }
 
 function App() {
@@ -209,7 +207,8 @@ function App() {
 	const displayPlays = (streams: IStreamsInfo[]) => {
 		return (
 			<>
-				{streams.map(({ streamId, freeze, time, warn, parentId, player, login, countPlays }) => {
+				{streams.map(({ streamId, freeze, time, warn, parentId, account, countPlays }) => {
+					const [player, login, pass] = account.split(':')
 					return (
 						<div id={`players-${streamId}`} className={freeze ? 'freeze' : ''}>
 							<div style={{ width: `${time}%` }}></div>
