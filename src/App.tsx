@@ -249,7 +249,7 @@ function App() {
 	const displayInfos = () => {
 		return (
 			<>
-				{Object.entries(leftData).forEach(([k, v]) => (
+				{Object.entries(leftData).map(([k, v]) => (
 					<div>{`${k} => ${v}`}</div>
 				))}
 			</>
