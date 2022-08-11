@@ -260,12 +260,12 @@ try {
 
 				if (!client.next && time > 30) {
 					client.next = true
-					++client.infos.countPlays
+					client.infos.countPlays = client.infos.countPlays + 1
 				}
 			} else if (time < client.infos.time) {
 				client.next = false
 			} else {
-				++client.pauseCount
+				client.pauseCount = client.pauseCount + 1
 
 				client.infos = {
 					...datas,
