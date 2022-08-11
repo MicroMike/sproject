@@ -26,6 +26,8 @@ interface IStreamsInfo {
 	countPlays?: any
 	code?: any
 	parentId?: any
+	player?: any
+	login?: any
 }
 
 function App() {
@@ -207,11 +209,11 @@ function App() {
 	const displayPlays = (streams: IStreamsInfo[]) => {
 		return (
 			<>
-				{streams.map(({ streamId, freeze, time, warn, parentId, account, countPlays }) => {
+				{streams.map(({ streamId, freeze, time, warn, parentId, player, login, countPlays }) => {
 					return (
 						<div id={`players-${streamId}`} className={freeze ? 'freeze' : ''}>
 							<div style={{ width: `${time}%` }}></div>
-							<span style={{ color: `${(warn && 'orange') || (freeze && 'red')}` }}>{`${parentId} - ${account} : ${time}`}</span> ({countPlays || ''})
+							<span style={{ color: `${(warn && 'orange') || (freeze && 'red')}` }}>{`${parentId} - ${player}:${login} : ${time}`}</span> ({countPlays || ''})
 							<button onClick={() => screenshot(streamId)}>V</button>
 							<button onClick={() => kill(streamId)}>K</button>
 						</div>
