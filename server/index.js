@@ -247,8 +247,6 @@ try {
 		client.on('time', datas => {
 			if (!client.infos) { return }
 
-			console.log('data', datas)
-
 			if (isNaN(client.infos.time)) { client.infos.time = 0 }
 			if (isNaN(client.infos.countPlays)) { client.infos.countPlays = 0 }
 
@@ -279,11 +277,8 @@ try {
 			}
 
 			if (client.infos.countPlays > 1) {
-				client.emit('out') // update to changeAlbum after test correct
+				client.emit('outlog') // update to changeAlbum after test correct
 			}
-
-			console.log('client.infos', client.infos)
-			console.log('stream', streams[client.id].infos)
 		})
 
 		client.on('playerInfos', datas => {
