@@ -196,6 +196,8 @@ const isWaiting = async (props, client) => {
 	const tooManyLoad = Object.values(streams).filter(s => s.parentId === parentId && s.infos && s.infos.other).length > 0
 	const isMax = Object.values(streams).filter(s => s.parentId === parentId).length >= max
 
+	tooManyLoad && console.log('tooManyLoad', parentId)
+
 	if (/check/.test(client.parentId) || (!tooManyLoad && !isMax)) {
 		client.uniqId = streamId
 		client.parentId = parentId
