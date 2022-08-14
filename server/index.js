@@ -476,6 +476,24 @@ try {
 			client.disconnect()
 		})
 
+		client.on('disconnect', (why) => {
+			console.log('disconnect')
+
+			if (streams[client.uniqId]) {
+				usedAccounts = usedAccounts.filter(a => a !== client.account)
+				delete streams[client.uniqId]
+				const noMore = Object.values(streams).filter(s => s.parentId === client.parentId).length === 0
+				if (noMore) { delete parents[client.parentId] }
+			}
+
+			if (webs[client.id]) {
+				delete webs[client.id]
+			}
+
+			client.removeAllListeners()
+			client.disconnect()
+		})
+
 		setTimeout(() => {
 			client.emit('activate', client.id)
 		}, 5000);
