@@ -211,8 +211,7 @@ const isWaiting = async (props, client) => {
 		getAccountNotUsed(client)
 	} else {
 		console.log('still isWaiting tooManyLoad: ', tooManyLoad)
-		await wait(5 * 1000)
-		await isWaiting(props, client)
+		client.emit('loaded')
 	}
 }
 
