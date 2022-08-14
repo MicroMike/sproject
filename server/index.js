@@ -16,7 +16,9 @@ app.use(express.static("build"));
 
 const http = require('http').createServer(routes(app));
 
-const io = new Server(http);
+const io = new Server(http, {
+	pingTimeout: 1000 * 60 * 5
+});
 
 // MongoDB Connection
 mongoose.connect(
