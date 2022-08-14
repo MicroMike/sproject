@@ -194,11 +194,12 @@ const getAccountNotUsed = async (c) => {
 }
 
 const isWaiting = async (props, client) => {
-	console.log('isWaiting')
 	const { parentId, streamId, max } = props
 
 	const tooManyLoad = Object.values(streams).filter(s => s.parentId === parentId && s.infos && s.infos.other).length > 0
 	const isMax = Object.values(streams).filter(s => s.parentId === parentId).length >= max
+
+	console.log('isWaiting')
 
 	if (/check/.test(client.parentId) || (!tooManyLoad && !isMax)) {
 		client.uniqId = streamId
@@ -209,6 +210,7 @@ const isWaiting = async (props, client) => {
 
 		getAccountNotUsed(client)
 	} else {
+		console.log('still isWaiting tooManyLoad: ', tooManyLoad)
 		await wait(5 * 1000)
 		await isWaiting(props, client)
 	}
@@ -217,10 +219,13 @@ const isWaiting = async (props, client) => {
 try {
 	io.on('connection', client => {
 		client.on('isWaiting', async (props) => {
+			client.isWaiting = true
 			await isWaiting(props, client)
 		})
 
 		client.on('client', async ({ parentId, streamId, account, max, back }) => {
+			if (client.isWaiting) { return }
+
 			console.log('client')
 			client.uniqId = streamId
 			client.parentId = parentId
