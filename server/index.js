@@ -373,10 +373,6 @@ try {
 		client.on('web', () => {
 			webs[client.id] = client
 
-			Object.values(imgs).forEach(d => {
-				client.emit('stream', d)
-			})
-
 			client.on('screenshot', streamId => {
 				const stream = streams[streamId]
 				if (stream && stream.emit) {
@@ -449,6 +445,10 @@ try {
 			})
 
 			client.emit('webActivate', client.id)
+
+			Object.values(imgs).forEach(d => {
+				client.emit('stream', d)
+			})
 		})
 
 		client.on('over', (why) => {
