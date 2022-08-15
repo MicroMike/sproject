@@ -28,10 +28,18 @@ interface IStreamsInfo {
 	parentId?: any
 }
 
+interface IStream {
+	streamOn: any
+	streamId: any
+	img: any
+	log: any
+}
+
 function App() {
 	const [data, setData] = React.useState<IData>({})
 	const [leftData, setLeftData] = React.useState<any>({})
 	const [streams, setStreams] = React.useState<{ ok?: IStreamsInfo[], other?: IStreamsInfo[], freeze?: IStreamsInfo[] }>({})
+	const [screenshots, setScreenshots] = React.useState<IStream[]>([])
 
 	React.useEffect(() => {
 		socket.on('activate', () => {
@@ -181,26 +189,8 @@ function App() {
 		// document.querySelector('#del').innerHTML = delList
 	})
 
-	socket.on('stream', ({ streamOn, streamId, img, log }) => {
-		// const isDom = document.querySelector('#class' + streamId)
-		const streamBtn = streamOn ? 'streamOff' : 'streamOn'
-		const html = img
-			? `<div>
-										<h2>${log} :</h2>
-										<img id="class${streamId}" src="data:image/png;base64,${img}" />
-										<button id="btn${streamId}" class="${streamId}" onclick="toggleBtn(this)">${streamBtn}</button>
-										<textarea id="script${streamId}"></textarea>
-										<button id="btnScript${streamId}" class="${streamId}" onclick="runScript(this)">Run script</button>
-									</div>`
-			: `<div>
-										<h2>${log} :</h2>
-									</div>`
-		// if (!isDom) {
-		// document.querySelector('.screenshot').insertAdjacentHTML('beforeEnd', html)
-		// }
-		// else {
-		// 	isDom.src = 'data:image/png;base64,' + img
-		// }
+	socket.on('stream', (props: IStream) => {
+		setScreenshots((s) => [...s, props])
 	})
 
 	const displayPlays = (streams: IStreamsInfo[]) => {
@@ -285,7 +275,16 @@ function App() {
 						<div className="codes"></div>
 					</div>
 				</div>
-				<div className="screenshot"></div>
+				<div className="screenshot">
+					{screenshots.map(({ log, streamId, img }) => {
+						return (
+							<>
+								<h2>{log} :</h2>
+								<img alt="screenshot" className={`screen-${streamId}`} src={`data:image/png;base64,${img}`} />
+							</>
+						)
+					})}
+				</div>
 			</body>
 		</div>
 	);
