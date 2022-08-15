@@ -181,14 +181,10 @@ const getAccountNotUsed = async (c) => {
 	const account = await getAccount(isCheck)
 	const accountAlreadyUsed = usedAccounts.includes(account) // Object.values(streams).find(s => s.account === account)
 
-	console.log('getAccountNotUsed')
-
 	if (accountAlreadyUsed) {
-		console.log(account, 'already used')
 		await wait(3 * 1000)
 		await getAccountNotUsed(c)
 	} else {
-		console.log('getAccountNotUsed OK')
 		usedAccounts.push(account)
 		c.infos.account = account
 		c.emit('canRun', account)
@@ -201,8 +197,6 @@ const isWaiting = async (props, client) => {
 	const tooManyLoad = Object.values(streams).filter(s => s.parentId === parentId && s.infos && s.infos.other).length > 0
 	const isMax = Object.values(streams).filter(s => s.parentId === parentId).length >= max
 
-	console.log('isWaiting')
-
 	if (/check/.test(client.parentId) || (!tooManyLoad && !isMax)) {
 		client.uniqId = streamId
 		client.parentId = parentId
@@ -212,7 +206,6 @@ const isWaiting = async (props, client) => {
 
 		getAccountNotUsed(client)
 	} else {
-		console.log('still isWaiting tooManyLoad: ', tooManyLoad)
 		client.emit('loaded')
 	}
 }
