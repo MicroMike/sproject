@@ -97,6 +97,23 @@ function App() {
 
 			setStreams(filter)
 		})
+
+		socket.on('clearStream', (delList) => {
+			// document.querySelector('#del').innerHTML = delList
+		})
+	
+		socket.on('delList', (delList) => {
+			// document.querySelector('#del').innerHTML = delList
+		})
+	
+		socket.on('stream', (props: IStream) => {
+			setScreenshots((s) => [...s, props])
+		})
+
+		socket.on('endStream', streamId => {
+			// const isDom = streamId && document.querySelector('#class' + streamId)
+			// isDom && isDom.parentElement.remove()
+		})
 	}, [])
 
 	React.useEffect(() => {
@@ -161,11 +178,6 @@ function App() {
 		socket.emit('endCheck')
 	}
 
-	socket.on('endStream', streamId => {
-		// const isDom = streamId && document.querySelector('#class' + streamId)
-		// isDom && isDom.parentElement.remove()
-	})
-
 	const toggleBtn = (btn: any) => {
 		socket.emit(btn.innerText, btn.className)
 		btn.innerText = btn.innerText === 'streamOn' ? 'streamOff' : 'streamOn'
@@ -180,18 +192,6 @@ function App() {
 		// const scriptText = document.querySelector('#scriptCode' + btn.className).value
 		// socket.emit('runCode', { id: btn.className, scriptText })
 	}
-
-	socket.on('clearStream', (delList) => {
-		// document.querySelector('#del').innerHTML = delList
-	})
-
-	socket.on('delList', (delList) => {
-		// document.querySelector('#del').innerHTML = delList
-	})
-
-	socket.on('stream', (props: IStream) => {
-		setScreenshots((s) => [...s, props])
-	})
 
 	const displayPlays = (streams: IStreamsInfo[]) => {
 		return (

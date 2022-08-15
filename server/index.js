@@ -217,7 +217,6 @@ try {
 		})
 
 		client.on('client', async ({ parentId, streamId, account, max, back }) => {
-			console.log('client')
 			client.uniqId = streamId
 			client.parentId = parentId
 			client.account = account
