@@ -144,7 +144,7 @@ function App() {
 	}
 
 	const clearScreen = () => {
-		// document.querySelector('.screenshot').innerHTML = ''
+		setScreenshots([])
 		socket.emit('clearScreen')
 	}
 

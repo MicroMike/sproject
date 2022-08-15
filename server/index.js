@@ -374,9 +374,7 @@ try {
 			webs[client.id] = client
 
 			Object.values(imgs).forEach(d => {
-				Object.values(webs).forEach(c => {
-					c.emit('stream', d)
-				})
+				client.emit('stream', d)
 			})
 
 			client.on('screenshot', streamId => {
