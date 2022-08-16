@@ -61,7 +61,7 @@ body {
 	position: relative;
 }
 
-[id^="players-"] div {
+[id^="players-"] .play-time {
 	position: absolute;
 	top: 0;
 	left: 0;

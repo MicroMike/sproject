@@ -200,7 +200,7 @@ function App() {
 					const [player, login, pass] = account.split(':')
 					return (
 						<div id={`players-${streamId}`} className={freeze ? 'freeze' : ''}>
-							<div style={{ width: `${time}%` }}></div>
+							<div className="play-time" style={{ width: `${time}%` }} />
 							<div className="play-container">
 								<span style={{ color: `${(warn && 'orange') || (freeze && 'red')}` }}>{`${parentId} - ${player}:${login} : ${time}`}</span> ({countPlays || ''})
 								<button onClick={() => screenshot(streamId)}>V</button>
