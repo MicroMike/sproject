@@ -101,11 +101,11 @@ function App() {
 		socket.on('clearStream', (delList) => {
 			// document.querySelector('#del').innerHTML = delList
 		})
-	
+
 		socket.on('delList', (delList) => {
 			// document.querySelector('#del').innerHTML = delList
 		})
-	
+
 		socket.on('stream', (props: IStream) => {
 			setScreenshots((s) => [...s, props])
 		})
@@ -201,9 +201,11 @@ function App() {
 					return (
 						<div id={`players-${streamId}`} className={freeze ? 'freeze' : ''}>
 							<div style={{ width: `${time}%` }}></div>
-							<span style={{ color: `${(warn && 'orange') || (freeze && 'red')}` }}>{`${parentId} - ${player}:${login} : ${time}`}</span> ({countPlays || ''})
-							<button onClick={() => screenshot(streamId)}>V</button>
-							<button onClick={() => kill(streamId)}>K</button>
+							<div className="play-container">
+								<span style={{ color: `${(warn && 'orange') || (freeze && 'red')}` }}>{`${parentId} - ${player}:${login} : ${time}`}</span> ({countPlays || ''})
+								<button onClick={() => screenshot(streamId)}>V</button>
+								<button onClick={() => kill(streamId)}>K</button>
+							</div>
 						</div>
 					)
 				})}
