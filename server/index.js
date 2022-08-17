@@ -4,6 +4,7 @@ const {
 	check,
 	actions,
 } = require('./mongo')
+const { getAccount: getAccounts } = require('./mongoSchema')
 const routes = require('./routes')
 const { wait } = require('./helpers')
 
@@ -36,7 +37,7 @@ mongoose.connect(
 );
 
 let usedAccounts = []
-let accounts
+let countAccounts = {}
 let checkAccounts = null
 let plays = 0
 let nexts = 0
@@ -68,6 +69,15 @@ let serverPlays = {}
 
 const calcRatio = {}
 const resultRatio = {}
+
+setInterval(() => {
+	getAccounts(false, true, (cA) => {
+		countAccounts = cA
+	})
+	getAccounts(true, true, (cA) => {
+		checkAccounts = cA
+	})
+}, 60 * 1000);
 
 setInterval(async () => {
 	gain = plays * 0.004 * 0.9 / ++time
@@ -134,23 +144,28 @@ const playing = (id = false) => {
 	return id ? p[id] : p
 }
 
-const playerCountPlaying = () => {
-	const arr = {}
-	Object.values(streams).forEach(s => {
-		const player = s.account && s.account.split(':')[0]
-		arr[player] = arr[player] ? arr[player] + 1 : 1
-	})
-	return arr
+const countByPlayer = (list) => {
+	return list.reduce((prev, a) => {
+		const playerKey = a.account.split(':')[0]
+		const d = prev[playerKey]
+		return { ...prev, [playerKey]: d ? d + 1 : 1 }
+	}, {})
+
+	// const arr = {}
+	// Object.values(streams).forEach(s => {
+	// 	const player = s.account && s.account.split(':')[0]
+	// 	arr[player] = arr[player] ? arr[player] + 1 : 1
+	// })
+	// return arr
 }
 
 const getAllData = () => ({
-	accounts: accounts && accounts.length,
 	streams: Object.values(streams).length,
 	playing: Object.values(streams).filter(s => s.infos).length,
 	used: Object.values(used).length,
 	webs: Object.values(webs).length,
 	checkLeft: checkAccounts && checkAccounts.length,
-	...playerCountPlaying(),
+	...countByPlayer(countAccounts),
 	plays: plays * 0.004 * 0.9 + '€ (' + plays + ' / ' + nexts + ') ' + String(nexts / plays * 100).split('.')[0] + '%',
 	gain: gain + '€/min ' + String(gain * 60 * 24).split('.')[0] + '€/jour ' + String(gain * 60 * 24 * 30).split('.')[0] + '€/mois',
 	gain2: gain2 + '€/min ' + String(gain2 * 60 * 24).split('.')[0] + '€/jour ' + String(gain2 * 60 * 24 * 30).split('.')[0] + '€/mois',
