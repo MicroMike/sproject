@@ -42,6 +42,11 @@ body {
 	background: #fff;
 }
 
+#data {
+	text-align: left;
+	margin-top: 15px;
+}
+
 #errs,
 #servers,
 #serverPlays {
