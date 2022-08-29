@@ -145,19 +145,18 @@ const playing = (id = false) => {
 }
 
 const countByPlayer = (list) => {
-	console.log('list', list)
-	return list.reduce((prev, a) => {
-		const playerKey = a.account.split(':')[0]
-		const d = prev[playerKey]
-		return { ...prev, [playerKey]: d ? d + 1 : 1 }
-	}, {})
+	let listToReturn
 
-	// const arr = {}
-	// Object.values(streams).forEach(s => {
-	// 	const player = s.account && s.account.split(':')[0]
-	// 	arr[player] = arr[player] ? arr[player] + 1 : 1
-	// })
-	// return arr
+	try {
+		listToReturn = list.reduce((prev, a) => {
+			const playerKey = a.account.split(':')[0]
+			const d = prev[playerKey]
+			return { ...prev, [playerKey]: d ? d + 1 : 1 }
+		}, {})
+	}
+	catch (e) { console.log('err', e) }
+
+	return listToReturn
 }
 
 const getAllData = () => ({
