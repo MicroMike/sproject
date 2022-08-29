@@ -252,6 +252,10 @@ try {
 			streams[streamId] = client
 			parents[parentId] = { uniqId: parentId, max }
 
+			if (back) {
+				usedAccounts.push(account)
+			}
+
 			if (!/checklive/.test(parentId) && !back) {
 				client.emit('mRun')
 			}
