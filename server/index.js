@@ -493,8 +493,6 @@ try {
 		})
 
 		client.on('disconnect', (why) => {
-			console.log('disconnect')
-
 			if (streams[client.uniqId]) {
 				usedAccounts = usedAccounts.filter(a => a !== client.account)
 				delete streams[client.uniqId]
