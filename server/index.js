@@ -236,6 +236,15 @@ try {
 			client.parentId = parentId
 			client.account = account
 			client.max = max
+			client.timeout = 0
+			client.timeoutFn = () => {
+				clearTimeout(client.timeout)
+				client.timeout = setTimeout(() => {
+					client.emit('forceOut')
+				}, 10 * 60 * 1000)
+			}
+
+			client.timeoutFn()
 
 			const alreadyPlaying = back && account ? { parentId, streamId, account, time: 'PLAY', ok: true } : {}
 			client.infos = client.infos || alreadyPlaying
@@ -297,6 +306,8 @@ try {
 		})
 
 		client.on('playerInfos', datas => {
+			client.timeoutFn && client.timeoutFn()
+
 			if (datas.ok) {
 				delete imgs[datas.streamId];
 			}
