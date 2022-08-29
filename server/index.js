@@ -145,6 +145,7 @@ const playing = (id = false) => {
 }
 
 const countByPlayer = (list) => {
+	if (!list) return {}
 	return list.reduce((prev, a) => {
 		const playerKey = a.account.split(':')[0]
 		const d = prev[playerKey]
