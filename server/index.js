@@ -154,7 +154,7 @@ const countByPlayer = (list) => {
 			return { ...prev, [playerKey]: d ? d + 1 : 1 }
 		}, {})
 	}
-	catch (e) { console.log('err', e) }
+	catch (e) { }
 
 	return listToReturn
 }
