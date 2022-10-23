@@ -197,7 +197,6 @@ const getAccountNotUsed = async (c) => {
 	const accountAlreadyUsed = usedAccounts.includes(account) // Object.values(streams).find(s => s.account === account)
 
 	if (accountAlreadyUsed) {
-		console.log('accountAlreadyUsed')
 		await wait(3 * 1000)
 		await getAccountNotUsed(c)
 	} else {
@@ -222,7 +221,6 @@ const isWaiting = async (props, client) => {
 
 		getAccountNotUsed(client)
 	} else {
-		console.log('tooManyLoad')
 		client.emit('loaded')
 	}
 }
