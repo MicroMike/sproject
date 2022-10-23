@@ -43,7 +43,17 @@ const getAccount = async (isCheck = false, multi = false, callback) => {
 		if (!Ra || Ra.length === 0) {
 			callback(false)
 		} else {
-			const a = Ra[rand(Ra.length - 1)]
+			let accounts = Ra
+
+			if (rand(1) === 1) {
+				accounts = Ra.filter((a) => /amazon/.test(a))
+			}
+
+			if (accounts.length === 0) {
+				accounts = Ra
+			}
+
+			const a = accounts[rand(accounts.length - 1)]
 			callback(multi ? Ra : a.account)
 		}
 	})
