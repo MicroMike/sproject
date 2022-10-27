@@ -218,7 +218,7 @@
 		})
 
 		const displayPlays = (p) => {
-			let { account, time, streamId, freeze, other, out, ok, nope, warn, countPlays, code, parentId } = p
+			let { account, time, streamId, freeze, other, out, ok, nope, warn, countPlays, playLoop, code, parentId } = p
 			time = time || 0
 
 			const isCode = document.querySelector(`.codes #scriptCode${streamId}`)
@@ -230,7 +230,7 @@
 
 			const insideHtml = `
       <div style="width:${time}%;"></div>
-      <span style="color:${(warn && 'orange') || (freeze && 'red')};">${parentId} - ${account} : ${time}</span> (${countPlays || ''})
+      <span style="color:${(warn && 'orange') || (freeze && 'red')};">${parentId} - ${account} : ${time}</span> (${countPlays || ''}/${playLoop || ''})
       <button onClick="screenshot('${streamId}')">V</button>
       <button onClick="kill('${streamId}')">K</button>
       `
