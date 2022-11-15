@@ -217,12 +217,31 @@ const isWaiting = async (props, client) => {
 		client.parentId = parentId
 		client.max = max
 		client.infos = { streamId, parentId, account: 'loading', time: 'WAIT', other: true }
+		client.timeout = setTimeout(() => {
+			exit(client)
+		}, 5 * 60 * 1000);
 		streams[streamId] = client
 
 		getAccountNotUsed(client)
 	} else {
 		client.emit('loaded')
 	}
+}
+
+const exit = (client) => {
+	if (streams[client.uniqId]) {
+		usedAccounts = usedAccounts.filter(a => a !== client.account)
+		delete streams[client.uniqId]
+		const noMore = Object.values(streams).filter(s => s.parentId === client.parentId).length === 0
+		if (noMore) { delete parents[client.parentId] }
+	}
+
+	if (webs[client.id]) {
+		delete webs[client.id]
+	}
+
+	client.removeAllListeners()
+	client.disconnect()
 }
 
 try {
@@ -310,7 +329,7 @@ try {
 		})
 
 		client.on('playerInfos', datas => {
-			// client.timeoutFn && client.timeoutFn()
+			clearTimeout(streams[datas.streamId].timeout)
 
 			if (datas.ok) {
 				delete imgs[datas.streamId];
@@ -481,35 +500,11 @@ try {
 		})
 
 		client.on('over', (why) => {
-			if (streams[client.uniqId]) {
-				usedAccounts = usedAccounts.filter(a => a !== client.account)
-				delete streams[client.uniqId]
-				const noMore = Object.values(streams).filter(s => s.parentId === client.parentId).length === 0
-				if (noMore) { delete parents[client.parentId] }
-			}
-
-			if (webs[client.id]) {
-				delete webs[client.id]
-			}
-
-			client.removeAllListeners()
-			client.disconnect()
+			exit(client)
 		})
 
 		client.on('disconnect', (why) => {
-			if (streams[client.uniqId]) {
-				usedAccounts = usedAccounts.filter(a => a !== client.account)
-				delete streams[client.uniqId]
-				const noMore = Object.values(streams).filter(s => s.parentId === client.parentId).length === 0
-				if (noMore) { delete parents[client.parentId] }
-			}
-
-			if (webs[client.id]) {
-				delete webs[client.id]
-			}
-
-			client.removeAllListeners()
-			client.disconnect()
+			exit(client)
 		})
 
 		setTimeout(() => {
