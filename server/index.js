@@ -255,15 +255,6 @@ try {
 			client.parentId = parentId
 			client.account = account
 			client.max = max
-			// client.timeout = 0
-			// client.timeoutFn = () => {
-			// 	clearTimeout(client.timeout)
-			// 	client.timeout = setTimeout(() => {
-			// 		client.emit('forceOut')
-			// 	}, 10 * 60 * 1000)
-			// }
-
-			// client.timeoutFn()
 
 			const alreadyPlaying = back && account ? { parentId, streamId, account, time: 'PLAY', ok: true } : {}
 			client.infos = client.infos || alreadyPlaying
@@ -273,6 +264,9 @@ try {
 
 			if (back) {
 				usedAccounts.push(account)
+				client.timeout = setTimeout(() => {
+					exit(client)
+				}, 5 * 60 * 1000);
 			}
 
 			if (!/checklive/.test(parentId) && !back) {
