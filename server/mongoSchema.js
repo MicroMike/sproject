@@ -46,7 +46,7 @@ const getAccount = async (isCheck = false, multi = false, callback) => {
 			let accounts = Ra
 
 			if (isCheck) {
-				accounts = accounts.map((a) => /amazon|tidal/.test(a))
+				accounts = accounts.filter((a) => /amazon|tidal/.test(a))
 			}
 
 			// if (rand(2) === 1) {
