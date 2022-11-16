@@ -45,6 +45,10 @@ const getAccount = async (isCheck = false, multi = false, callback) => {
 		} else {
 			let accounts = Ra
 
+			if (isCheck) {
+				accounts = accounts.map((a) => /amazon/.test(a))
+			}
+
 			// if (rand(2) === 1) {
 			// 	accounts = Ra.filter((a) => /amazon/.test(a))
 			// }
