@@ -323,7 +323,7 @@ try {
 		})
 
 		client.on('playerInfos', datas => {
-			clearTimeout(streams[datas.streamId].timeout)
+			clearTimeout(client.timeout)
 
 			if (datas.ok) {
 				delete imgs[datas.streamId];
