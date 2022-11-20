@@ -4,6 +4,7 @@ const {
 	MSong,
 	getAccount,
 	check,
+	del,
 } = require('./mongoSchema')
 
 module.exports = {
@@ -12,6 +13,9 @@ module.exports = {
 	}),
 	check: (account, bool) => new Promise((res) => {
 		check(account, bool, (a) => res(a))
+	}),
+	del: (account, bool) => new Promise((res) => {
+		del(account, bool, (a) => res(a))
 	}),
 	reset: async () => {
 		return new Promise(res => {

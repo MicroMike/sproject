@@ -2,6 +2,7 @@ const {
 	getCheckAccounts,
 	getAccount,
 	check,
+	del,
 	actions,
 } = require('./mongo')
 const { getAccount: getAccounts } = require('./mongoSchema')
@@ -348,6 +349,10 @@ try {
 
 		client.on('checkok', ({ account }) => {
 			check(account, false)
+		})
+
+		client.on('del', ({ account }) => {
+			del(account, true)
 		})
 
 		client.on('parent', async ({ parentId, connected, env, max }) => {

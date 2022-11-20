@@ -72,6 +72,15 @@ const check = async (account, bool, callback) => {
 	})
 }
 
+const del = async (account, bool, callback) => {
+	MAccount.findOne({ account }, (err, Ra) => {
+		if (err || !Ra) return callback('notFound');
+
+		Ra.del = bool
+		Ra.save((err, a) => { callback(Ra) })
+	})
+}
+
 module.exports = {
 	MAccount,
 	MGain,
@@ -79,4 +88,5 @@ module.exports = {
 	MCard,
 	getAccount,
 	check,
+	del,
 }
