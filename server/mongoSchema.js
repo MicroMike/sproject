@@ -63,6 +63,18 @@ const getAccount = async (isCheck = false, multi = false, callback) => {
 	})
 }
 
+const getDelAccount = async (callback) => {
+	const findParams = { del: { $ne: true } }
+
+	MAccount.find(findParams, (err, Ra) => {
+		if (!Ra || Ra.length === 0) {
+			callback(false)
+		} else {
+			callback(Ra)
+		}
+	})
+}
+
 const check = async (account, bool, callback) => {
 	MAccount.findOne({ account }, (err, Ra) => {
 		if (err || !Ra) return callback('notFound');
@@ -89,4 +101,5 @@ module.exports = {
 	getAccount,
 	check,
 	del,
+	getDelAccount,
 }

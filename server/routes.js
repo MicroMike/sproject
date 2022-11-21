@@ -3,6 +3,7 @@ const {
 	MCard,
 	getAccount,
 	check,
+	getDelAccount,
 } = require('./mongoSchema')
 const { rand } = require('./helpers')
 const fs = require('fs');
@@ -27,7 +28,12 @@ module.exports = (app) => {
 			}
 
 			case '/accounts': {
-				getAccount(query.check === 'true', true, (r) => res.json(r))
+				if (query.del === 'true') {
+					getDelAccount((r) => res.json(r))
+				} else {
+					getAccount(query.check === 'true', true, (r) => res.json(r))
+				}
+
 				break
 			}
 
