@@ -64,7 +64,7 @@ const getAccount = async (isCheck = false, multi = false, callback) => {
 }
 
 const getDelAccount = async (callback) => {
-	const findParams = { del: { $ne: true } }
+	const findParams = { del: true }
 
 	MAccount.find(findParams, (err, Ra) => {
 		if (!Ra || Ra.length === 0) {
