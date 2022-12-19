@@ -502,6 +502,12 @@ try {
 			exit(client)
 		})
 
+		client.on('reset', (why) => {
+			Object.values(streams).forEach(s => {
+				exit(s)
+			})
+		})
+
 		client.on('disconnect', (why) => {
 			exit(client)
 		})
