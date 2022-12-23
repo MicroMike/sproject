@@ -11,8 +11,10 @@ const fs = require('fs');
 module.exports = (app) => {
 	app.use((req, res) => {
 		const url = req.url.split('?')[0]
-		const params = req.url.split('?')[1] + req.url.hash
+		const params = req.url.split('?')[1]
 		const query = req.query
+
+		console.log(req)
 
 		switch (url) {
 			case '/clearUsed': {
