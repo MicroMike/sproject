@@ -10,7 +10,7 @@ const fs = require('fs');
 
 module.exports = (app) => {
 	app.use((req, res) => {
-		const decodedURL = decodeURI(req.url)
+		const decodedURL = decodeURIComponent(req.url)
 		const url = decodedURL.split('?')[0]
 		const params = decodedURL.split('?')[1]
 		const query = req.query
