@@ -15,8 +15,6 @@ module.exports = (app) => {
 		const params = decodedURL.split('?')[1]
 		const query = req.query
 
-		console.log(decodedURL)
-
 		switch (url) {
 			case '/clearUsed': {
 				MAccount.find({}, (err, Ra) => {
