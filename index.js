@@ -1,4 +1,4 @@
-const shell = require('./shelljs')
+const shell = require('shelljs')
 
 const l = shell.exec('pidof node', { silent: true })
 const nodePids = l.stdout.split(' ').map(p => String(Number(p)))
