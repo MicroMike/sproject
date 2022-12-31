@@ -12,4 +12,4 @@ setInterval(() => {
 	shell.exec(`kill -9 ${pids.join(' ')}`, { silent: true })
 
 	shell.exec('npm run s', { silent: true })
-}, 1000 * 60 * 60 * 3)
+}, 1000 * 60 * 60 * 24)
