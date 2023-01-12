@@ -58,7 +58,7 @@ const getAccount = async (isCheck = false, multi = false, callback) => {
 			// }
 
 			const a = accounts[rand(accounts.length - 1)]
-			callback(multi ? Ra : a.account)
+			callback(multi ? Ra : a && a.account)
 		}
 	})
 }
