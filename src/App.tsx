@@ -3,7 +3,7 @@ import React from 'react';
 import './App.css';
 import io from 'socket.io-client';
 
-var socket = io('http://216.158.239.199:3000');
+var socket = io('http://149.102.132.27:3000');
 
 interface IData {
 	numbers?: any
