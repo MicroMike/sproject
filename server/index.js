@@ -25,7 +25,7 @@ const io = new Server(http, {
 // MongoDB Connection
 mongoose.set('strictQuery', false)
 mongoose.connect(
-	process.env.MONGODB_URI || 'mongodb+srv://root:123456Ff@cluster0.zix0h.mongodb.net/Music',
+	process.env.MONGODB_URI || 'mongodb+srv://root:123456Ff%40cluster0.zix0h.mongodb.net/Music',
 	{
 		useNewUrlParser: true,
 		useUnifiedTopology: true,
