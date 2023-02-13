@@ -11,5 +11,5 @@ setInterval(() => {
 
 	shell.exec(`kill -9 ${pids.join(' ')}`, { silent: true })
 
-	shell.exec('npm run s')
+	shell.exec('node --trace-warnings server/index')
 }, 1000 * 60 * 60 * 3)
