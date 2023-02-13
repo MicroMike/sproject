@@ -198,7 +198,7 @@ const getAccountNotUsed = async (c) => {
 	const account = await getAccount(isCheck)
 	const accountAlreadyUsed = usedAccounts.includes(account) // Object.values(streams).find(s => s.account === account)
 
-	if (accountAlreadyUsed) {
+	if (accountAlreadyUsed || !account) {
 		await wait(3 * 1000)
 		await getAccountNotUsed(c)
 	} else {
