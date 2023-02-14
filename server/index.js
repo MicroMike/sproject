@@ -200,7 +200,8 @@ const getAccountNotUsed = async (c) => {
 
 	if (accountAlreadyUsed || !account) {
 		await wait(3 * 1000)
-		await getAccountNotUsed(c)
+		c.emit('loaded')
+		// await getAccountNotUsed(c)
 	} else {
 		usedAccounts.push(account)
 		c.infos.account = account
@@ -208,7 +209,7 @@ const getAccountNotUsed = async (c) => {
 	}
 }
 
-const isWaiting = async (props, client) => {
+const isWaiting = (props, client) => {
 	const { parentId, streamId, max } = props
 
 	const tooManyLoad = Object.values(streams).filter(s => s.parentId === parentId && s.infos && s.infos.other).length > 0
@@ -248,8 +249,8 @@ const exit = (client) => {
 
 try {
 	io.on('connection', client => {
-		client.on('isWaiting', async (props) => {
-			await isWaiting(props, client)
+		client.on('isWaiting', (props) => {
+			isWaiting(props, client)
 		})
 
 		client.on('client', async ({ parentId, streamId, account, max, back }) => {
