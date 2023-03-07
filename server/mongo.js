@@ -11,6 +11,9 @@ module.exports = {
 	getAccount: (isCheck) => new Promise((res) => {
 		getAccount(isCheck, false, (a) => res(a))
 	}),
+	getAccounts: (isCheck) => new Promise((res) => {
+		getAccount(isCheck, true, (a) => res(a))
+	}),
 	check: (account, bool) => new Promise((res) => {
 		check(account, bool, (a) => res(a))
 	}),

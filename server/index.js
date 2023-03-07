@@ -1,17 +1,18 @@
 const {
 	getCheckAccounts,
 	getAccount,
+	getAccounts,
 	check,
 	del,
 	actions,
 } = require('./mongo')
-const { getAccount: getAccounts } = require('./mongoSchema')
 const routes = require('./routes')
 const { wait } = require('./helpers')
 
 const express = require("express");
 const mongoose = require('mongoose');
 const { Server } = require("socket.io");
+const _ = require("lodash");
 
 const app = express(); // create express app
 app.use(express.static("build"));
@@ -51,6 +52,7 @@ let parents = {}
 let webs = {}
 let used = {}
 let errs = []
+let accounts = await getAccounts()
 
 actions('gain', body => {
 	const r = body.g
@@ -72,13 +74,10 @@ let serverPlays = {}
 const calcRatio = {}
 const resultRatio = {}
 
-setInterval(() => {
-	getAccounts(false, true, (cA) => {
-		countAccounts = cA
-	})
-	getAccounts(true, true, (cA) => {
-		checkAccounts = cA
-	})
+setInterval(async () => {
+	countAccounts = await getAccounts(false)
+	checkAccounts = await getAccounts(true)
+	accounts = await getAccounts()
 }, 60 * 1000);
 
 setInterval(async () => {
@@ -195,7 +194,8 @@ setInterval(() => {
 
 const getAccountNotUsed = async (c) => {
 	const isCheck = /check/.test(c.parentId)
-	const account = await getAccount(isCheck)
+	const account = _.shuffle((isCheck ? checkAccounts : accounts).filter((a) => !usedAccounts.includes(a.account)))[0]
+	// const account = await getAccount(isCheck)
 	const accountAlreadyUsed = usedAccounts.includes(account) // Object.values(streams).find(s => s.account === account)
 
 	if (accountAlreadyUsed || !account) {
