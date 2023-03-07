@@ -52,7 +52,7 @@ let parents = {}
 let webs = {}
 let used = {}
 let errs = []
-let accounts = (async () => await getAccounts())()
+let accounts = []
 
 actions('gain', body => {
 	const r = body.g
@@ -73,6 +73,12 @@ let serverPlays = {}
 
 const calcRatio = {}
 const resultRatio = {}
+
+setTimeout(async () => {
+	countAccounts = await getAccounts(false)
+	checkAccounts = await getAccounts(true)
+	accounts = await getAccounts()
+}, 1000);
 
 setInterval(async () => {
 	countAccounts = await getAccounts(false)
