@@ -52,7 +52,7 @@ let parents = {}
 let webs = {}
 let used = {}
 let errs = []
-let accounts = await getAccounts()
+let accounts = (async () => await getAccounts())()
 
 actions('gain', body => {
 	const r = body.g
