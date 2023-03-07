@@ -78,10 +78,6 @@ setTimeout(async () => {
 	countAccounts = await getAccounts(false)
 	checkAccounts = await getAccounts(true)
 	accounts = await getAccounts()
-
-	console.log('countAccounts', countAccounts)
-	console.log('checkAccounts', checkAccounts)
-	console.log('accounts', accounts)
 }, 1000);
 
 setInterval(async () => {
@@ -204,7 +200,8 @@ setInterval(() => {
 
 const getAccountNotUsed = async (c) => {
 	const isCheck = /check/.test(c.parentId)
-	const account = _.shuffle((isCheck ? checkAccounts : accounts).filter((a) => !usedAccounts.includes(a.account)))[0]
+	const account = _.shuffle((isCheck ? checkAccounts : accounts).filter((a) => !usedAccounts.includes(a.account)))[0].account
+	console.log(account)
 	// const account = await getAccount(isCheck)
 	const accountAlreadyUsed = usedAccounts.includes(account) // Object.values(streams).find(s => s.account === account)
 
