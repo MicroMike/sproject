@@ -200,7 +200,6 @@ setInterval(() => {
 
 const getAccountNotUsed = async (c) => {
 	const isCheck = /check/.test(c.parentId)
-	console.log(accounts.filter((a) => !usedAccounts.includes(a.account)))
 	const account = _.shuffle((isCheck ? checkAccounts : accounts).filter((a) => !usedAccounts.includes(a.account)))[0]?.account
 	// const account = await getAccount(isCheck)
 	const accountAlreadyUsed = usedAccounts.includes(account) // Object.values(streams).find(s => s.account === account)
