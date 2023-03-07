@@ -78,6 +78,10 @@ setTimeout(async () => {
 	countAccounts = await getAccounts(false)
 	checkAccounts = await getAccounts(true)
 	accounts = await getAccounts()
+
+	console.log('countAccounts', countAccounts)
+	console.log('checkAccounts', checkAccounts)
+	console.log('accounts', accounts)
 }, 1000);
 
 setInterval(async () => {
