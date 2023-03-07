@@ -197,7 +197,7 @@ function App() {
 		return (
 			<>
 				{streams.map(({ streamId, freeze, time, warn, parentId, account, countPlays }) => {
-					const [player, login, pass] = account.split(':')
+					const [player, login, pass] = account?.split(':')
 					return (
 						<div id={`players-${streamId}`} className={freeze ? 'freeze' : ''}>
 							<div className="play-time" style={{ width: `${time}%` }} />
