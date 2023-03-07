@@ -41,7 +41,7 @@ mongoose.connect(
 
 let usedAccounts = []
 let countAccounts = {}
-let checkAccounts = null
+let checkAccounts = []
 let plays = 0
 let nexts = 0
 let time = 0
