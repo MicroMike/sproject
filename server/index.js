@@ -200,7 +200,7 @@ setInterval(() => {
 
 const getAccountNotUsed = async (c) => {
 	const isCheck = /check/.test(c.parentId)
-	const { account, country } = _.shuffle((isCheck ? checkAccounts : accounts).filter((a) => !usedAccounts.includes(a.account)))[0] || {}
+	const { account, country = 'fr' } = _.shuffle((isCheck ? checkAccounts : accounts).filter((a) => !usedAccounts.includes(a.account)))[0] || {}
 	// const account = await getAccount(isCheck)
 	const accountAlreadyUsed = usedAccounts.includes(account) // Object.values(streams).find(s => s.account === account)
 
@@ -211,6 +211,7 @@ const getAccountNotUsed = async (c) => {
 	} else {
 		usedAccounts.push(account)
 		c.infos.account = account
+		console.log('country', country)
 		c.infos.country = country
 		c.emit('canRun', account)
 	}
