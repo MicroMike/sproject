@@ -211,7 +211,7 @@ const getAccountNotUsed = async (c) => {
 	} else {
 		usedAccounts.push(account)
 		c.infos.account = account
-		console.log('accounts', accounts[0])
+		console.log('accounts', _.shuffle(accounts)[0])
 		c.country = country
 		c.emit('canRun', account)
 	}
