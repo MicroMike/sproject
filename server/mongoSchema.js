@@ -10,6 +10,7 @@ const SAccount = new mongoose.Schema({
 	used: Boolean,
 	used2: Boolean,
 	v2: Boolean,
+	country: String
 });
 const MAccount = mongoose.model('Account', SAccount, 'accounts');
 
