@@ -211,8 +211,8 @@ const getAccountNotUsed = async (c) => {
 	} else {
 		usedAccounts.push(account)
 		c.infos.account = account
-		console.log('country', country)
-		c.infos.country = country
+		console.log('accounts', accounts[0])
+		c.country = country
 		c.emit('canRun', account)
 	}
 }
@@ -281,7 +281,7 @@ try {
 			}
 
 			if (!/checklive/.test(parentId) && !back) {
-				client.emit('mRun', client.infos.country)
+				client.emit('mRun', client.country)
 			}
 		})
 
