@@ -40,6 +40,7 @@ const MCard = mongoose.model('Card', SCard, 'cards');
 const getAccount = async (isCheck = false, multi = false, callback) => {
 	const findParams = { check: { $ne: isCheck ? false : true }, del: { $ne: true }, pause: { $ne: true } }
 
+
 	MAccount.find(findParams, (err, Ra) => {
 		if (!Ra || Ra.length === 0) {
 			callback(false)
@@ -61,6 +62,12 @@ const getAccount = async (isCheck = false, multi = false, callback) => {
 			const a = accounts[rand(accounts.length - 1)]
 			callback(multi ? Ra || [] : a && a.account)
 		}
+	})
+}
+
+const findAccounts = (params, callback) => {
+	MAccount.find({ "account": { "$regex": "^" + params, "$options": "i" }, del: { $ne: true }, pause: { $ne: true } }, (err, Ra) => {
+		callback(Ra || [])
 	})
 }
 
@@ -103,4 +110,5 @@ module.exports = {
 	check,
 	del,
 	getDelAccount,
+	findAccounts,
 }

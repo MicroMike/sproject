@@ -1,7 +1,7 @@
 const {
 	getCheckAccounts,
-	getAccount,
 	getAccounts,
+	findAccounts,
 	check,
 	del,
 	actions,
@@ -198,9 +198,10 @@ setInterval(() => {
 	})
 }, 1000);
 
-const getAccountNotUsed = async (c) => {
+const getAccountNotUsed = async (c, checkAccount) => {
 	const isCheck = /check/.test(c.parentId)
-	const { account, country = 'fr' } = _.shuffle(((isCheck ? checkAccounts : accounts) || []).filter((a) => !usedAccounts.includes(a.account)))[0] || {}
+	const checkA = await findAccounts(checkAccount)
+	const { account, country = 'fr' } = _.shuffle(((checkAccount ? checkA : isCheck ? checkAccounts : accounts) || []).filter((a) => !usedAccounts.includes(a.account)))[0] || {}
 	// const account = await getAccount(isCheck)
 	const accountAlreadyUsed = usedAccounts.includes(account) // Object.values(streams).find(s => s.account === account)
 
@@ -217,12 +218,12 @@ const getAccountNotUsed = async (c) => {
 }
 
 const isWaiting = (props, client) => {
-	const { parentId, streamId, max } = props
+	const { parentId, streamId, max, checkAccount } = props
 
 	const tooManyLoad = Object.values(streams).filter(s => s.parentId === parentId && s.infos && s.infos.other).length > 1
 	const isMax = Object.values(streams).filter(s => s.parentId === parentId).length >= max
 
-	if (/check/.test(client.parentId) || (!tooManyLoad && !isMax)) {
+	if (checkAccount || /check/.test(client.parentId) || (!tooManyLoad && !isMax)) {
 		client.uniqId = streamId
 		client.parentId = parentId
 		client.max = max
@@ -232,7 +233,7 @@ const isWaiting = (props, client) => {
 		}, 5 * 60 * 1000);
 		streams[streamId] = client
 
-		getAccountNotUsed(client)
+		getAccountNotUsed(client, checkAccount)
 	} else {
 		client.emit('loaded')
 	}
