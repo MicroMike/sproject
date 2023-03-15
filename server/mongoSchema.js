@@ -47,18 +47,6 @@ const getAccount = async (isCheck = false, multi = false, callback) => {
 		} else {
 			let accounts = Ra
 
-			if (isCheck) {
-				accounts = accounts.filter((a) => /amazon|tidal/.test(a))
-			}
-
-			// if (rand(2) === 1) {
-			// 	accounts = Ra.filter((a) => /amazon/.test(a))
-			// }
-
-			// if (accounts.length === 0) {
-			// 	accounts = Ra
-			// }
-
 			const a = accounts[rand(accounts.length - 1)]
 			callback(multi ? Ra || [] : a && a.account)
 		}
