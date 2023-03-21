@@ -45,7 +45,8 @@ const getAccount = async (isCheck = false, multi = false, callback) => {
 		if (!Ra || Ra.length === 0) {
 			callback(false)
 		} else {
-			let accounts = Ra
+			const appleAccounts = Ra.filter((f) => /^apple/.test(f.account))
+			const accounts = rand(3, 1) % 3 === 0 ? appleAccounts : Ra
 
 			const a = accounts[rand(accounts.length - 1)]
 			callback(multi ? Ra || [] : a && a.account)
