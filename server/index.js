@@ -8,6 +8,7 @@ const {
 } = require('./mongo')
 const routes = require('./routes')
 const { wait } = require('./helpers')
+const { rand } = require('./helpers')
 
 const express = require("express");
 const mongoose = require('mongoose');
@@ -201,7 +202,14 @@ setInterval(() => {
 const getAccountNotUsed = async (c, checkAccount) => {
 	const isCheck = /check/.test(c.parentId)
 	const checkA = await findAccounts(checkAccount)
-	const { account, country = 'fr' } = _.shuffle(((checkAccount ? checkA : isCheck ? checkAccounts : accounts) || []).filter((a) => !usedAccounts.includes(a.account)))[0] || {}
+
+	const appleAccounts = accounts.filter((f) => /^apple/.test(f.account))
+	const otherAccounts = accounts.filter((f) => !/^apple/.test(f.account))
+	const finalAccounts = rand(3, 1) % 3 === 0 ? appleAccounts : otherAccounts
+
+	const Ra = (checkAccount ? checkA : isCheck ? checkAccounts : finalAccounts) || []
+
+	const { account, country = 'fr' } = _.shuffle(Ra.filter((a) => !usedAccounts.includes(a.account)))[0] || {}
 	// const account = await getAccount(isCheck)
 	const accountAlreadyUsed = usedAccounts.includes(account) // Object.values(streams).find(s => s.account === account)
 
