@@ -4,6 +4,7 @@ const {
 	getAccount,
 	check,
 	getDelAccount,
+	update,
 } = require('./mongoSchema')
 const { rand } = require('./helpers')
 const fs = require('fs');
@@ -25,6 +26,12 @@ module.exports = (app) => {
 					})
 				})
 				res.json({ ok: 'true' })
+				break
+			}
+
+			case '/update': {
+				const [acc, key, value] = params.split('/')
+				update(acc, key, value, (r) => res.json(r))
 				break
 			}
 

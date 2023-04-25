@@ -69,6 +69,15 @@ const getDelAccount = async (callback) => {
 	})
 }
 
+const update = async (acc, key, value, callback) => {
+	MAccount.findOne({ account: { "$regex": acc, "$options": "i" } }, (err, Ra) => {
+		if (err || !Ra) return callback('notFound');
+
+		Ra[key] = value
+		Ra.save((err, a) => { callback(Ra) })
+	})
+}
+
 const check = async (account, bool, callback) => {
 	MAccount.findOne({ account }, (err, Ra) => {
 		if (err || !Ra) return callback('notFound');
@@ -97,4 +106,5 @@ module.exports = {
 	del,
 	getDelAccount,
 	findAccounts,
+	update,
 }
