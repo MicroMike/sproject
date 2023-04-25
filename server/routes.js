@@ -31,7 +31,7 @@ module.exports = (app) => {
 
 			case '/update': {
 				const [acc, key, value] = params.split('/')
-				update(acc, key, value, (r) => res.json(r))
+				acc && key && value && update(acc, key, value, (r) => res.json(r))
 				break
 			}
 
