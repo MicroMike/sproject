@@ -205,7 +205,7 @@ const getAccountNotUsed = async (c, checkAccount) => {
 
 	const appleAccounts = accounts.filter((f) => /^apple/.test(f.account))
 	const otherAccounts = accounts.filter((f) => !/^apple/.test(f.account))
-	const finalAccounts = rand(6, 1) % 6 === 0 ? appleAccounts : otherAccounts
+	const finalAccounts = rand(6, 1) % 6 === 0 && appleAccounts.length > 0 ? appleAccounts : otherAccounts
 
 	const Ra = (checkAccount ? checkA : isCheck ? checkAccounts : finalAccounts) || []
 
