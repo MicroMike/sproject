@@ -76,8 +76,10 @@ const update = async (acc, key, value, callback) => {
 
 		Ra.forEach(a => {
 			a[key] = value
-			a.save(() => { callback(Ra) })
+			a.save()
 		});
+
+		callback(Ra)
 	})
 }
 
