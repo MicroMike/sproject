@@ -82,7 +82,6 @@ setTimeout(async () => {
 setInterval(async () => {
 	accounts = await getAccounts(false)
 	checkAccounts = await getAccounts(true)
-	accounts = await getAccounts()
 }, 10 * 1000);
 
 setInterval(async () => {
