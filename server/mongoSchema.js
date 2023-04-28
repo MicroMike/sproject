@@ -71,11 +71,13 @@ const getDelAccount = async (callback) => {
 }
 
 const update = async (acc, key, value, callback) => {
-	MAccount.findOne({ account: { "$regex": acc, "$options": "i" } }, (err, Ra) => {
-		if (err || !Ra) return callback('notFound');
+	MAccount.find({ account: { "$regex": acc, "$options": "i" } }, (err, Ra) => {
+		if (err || !Ra || Ra.length === 0) return callback('notFound');
 
-		Ra[key] = value
-		Ra.save((err, a) => { callback(Ra) })
+		Ra.forEach(a => {
+			a[key] = value
+			a.save(() => { callback(Ra) })
+		});
 	})
 }
 
