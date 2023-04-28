@@ -41,7 +41,6 @@ mongoose.connect(
 );
 
 let usedAccounts = []
-let countAccounts = {}
 let checkAccounts = []
 let plays = 0
 let nexts = 0
@@ -76,13 +75,12 @@ const calcRatio = {}
 const resultRatio = {}
 
 setTimeout(async () => {
-	countAccounts = await getAccounts(false)
+	accounts = await getAccounts(false)
 	checkAccounts = await getAccounts(true)
-	accounts = await getAccounts()
 }, 1000);
 
 setInterval(async () => {
-	countAccounts = await getAccounts(false)
+	accounts = await getAccounts(false)
 	checkAccounts = await getAccounts(true)
 	accounts = await getAccounts()
 }, 10 * 1000);
@@ -173,7 +171,7 @@ const getAllData = () => ({
 	used: Object.values(used).length,
 	webs: Object.values(webs).length,
 	checkLeft: checkAccounts && checkAccounts.length,
-	...countByPlayer(countAccounts),
+	...countByPlayer(accounts),
 	plays: plays * 0.004 * 0.9 + '€ (' + plays + ' / ' + nexts + ') ' + String(nexts / plays * 100).split('.')[0] + '%',
 	gain: gain + '€/min ' + String(gain * 60 * 24).split('.')[0] + '€/jour ' + String(gain * 60 * 24 * 30).split('.')[0] + '€/mois',
 	gain2: gain2 + '€/min ' + String(gain2 * 60 * 24).split('.')[0] + '€/jour ' + String(gain2 * 60 * 24 * 30).split('.')[0] + '€/mois',
@@ -201,11 +199,12 @@ setInterval(() => {
 
 const getAccountNotUsed = async (c, checkAccount) => {
 	const isCheck = /check/.test(c.parentId)
-	const checkA = await findAccounts(checkAccount)
+	const checkA = checkAccount && await findAccounts(checkAccount)
 
-	const appleAccounts = accounts.filter((f) => /^apple/.test(f.account))
-	const otherAccounts = accounts.filter((f) => !/^apple/.test(f.account))
-	const finalAccounts = rand(6, 1) % 6 === 0 && appleAccounts.length > 0 ? appleAccounts : otherAccounts
+	// const appleAccounts = accounts.filter((f) => /^apple/.test(f.account))
+	// const otherAccounts = accounts.filter((f) => !/^apple/.test(f.account))
+	// const finalAccounts = rand(6, 1) % 6 === 0 && appleAccounts.length > 0 ? appleAccounts : otherAccounts
+	const finalAccounts = accounts
 
 	const Ra = (checkAccount ? checkA : isCheck ? checkAccounts : finalAccounts) || []
 
