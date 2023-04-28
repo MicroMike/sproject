@@ -82,7 +82,7 @@ setTimeout(async () => {
 setInterval(async () => {
 	accounts = await getAccounts(false)
 	checkAccounts = await getAccounts(true)
-}, 10 * 1000);
+}, 20 * 1000);
 
 setInterval(async () => {
 	gain = plays * 0.004 * 0.9 / ++time
