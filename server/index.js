@@ -70,6 +70,7 @@ let gain3temp = plays
 let tempPlays = []
 let tempCalc = plays
 let serverPlays = {}
+let waitForLoad = true
 
 const calcRatio = {}
 const resultRatio = {}
@@ -82,6 +83,7 @@ setTimeout(async () => {
 setInterval(async () => {
 	accounts = await getAccounts(false)
 	checkAccounts = await getAccounts(true)
+	waitForLoad = false
 }, 20 * 1000);
 
 setInterval(async () => {
@@ -211,7 +213,7 @@ const getAccountNotUsed = async (c, checkAccount) => {
 	// const account = await getAccount(isCheck)
 	const accountAlreadyUsed = usedAccounts.includes(account) // Object.values(streams).find(s => s.account === account)
 
-	if (accountAlreadyUsed || !account) {
+	if (waitForLoad || accountAlreadyUsed || !account) {
 		await wait(3 * 1000)
 		c.emit('loaded')
 		// await getAccountNotUsed(c)
