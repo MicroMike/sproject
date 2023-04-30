@@ -507,7 +507,7 @@ try {
 					}
 
 					if (!cid || c.parentId === cid) {
-						c.emit('Cdisconnect')
+						c.emit('forceOut')
 					}
 				})
 			})
