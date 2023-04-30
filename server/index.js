@@ -172,7 +172,7 @@ const countByPlayer = (list) => {
 const getAllData = () => ({
 	streams: Object.values(accounts).length,
 	playing: Object.values(streams).filter(s => s.infos).length,
-	used: Object.values(used).length,
+	used: Object.values(usedAccounts).length,
 	webs: Object.values(webs).length,
 	checkLeft: checkAccounts && checkAccounts.length,
 	...countByPlayer(accounts),
