@@ -201,7 +201,16 @@ setInterval(() => {
 	})
 }, 1000);
 
+let gettingAccount = false
+
 const getAccountNotUsed = async (c, checkAccount) => {
+	if (gettingAccount) {
+		await wait(1 * 1000)
+		c.emit('loaded')
+	}
+
+	gettingAccount = true
+
 	const isCheck = /check/.test(c.parentId)
 	const checkA = checkAccount && await findAccounts(checkAccount)
 
@@ -225,6 +234,7 @@ const getAccountNotUsed = async (c, checkAccount) => {
 		c.infos.account = account
 		c.country = country
 		c.emit('canRun', account)
+		gettingAccount = false
 	}
 }
 
