@@ -221,9 +221,12 @@ const getAccountNotUsed = async (c, checkAccount) => {
 
 	const Ra = (checkAccount ? checkA : isCheck ? checkAccounts : finalAccounts) || []
 
+	usedAccounts = Object.values(streams).map((c) => c.account)
+
 	const { account, country = 'fr' } = _.shuffle(Ra.filter((a) => !usedAccounts.includes(a.account)))[0] || {}
 	// const account = await getAccount(isCheck)
-	const accountAlreadyUsed = usedAccounts.includes(account) // Object.values(streams).find(s => s.account === account)
+
+	const accountAlreadyUsed = usedAccounts.includes(account)
 
 	if (accountAlreadyUsed || !account) {
 		await wait(3 * 1000)
@@ -234,7 +237,6 @@ const getAccountNotUsed = async (c, checkAccount) => {
 		c.infos.account = account
 		c.country = country
 		c.emit('canRun', account)
-		gettingAccount = false
 	}
 }
 
@@ -299,6 +301,8 @@ try {
 				client.timeout = setTimeout(() => {
 					exit(client)
 				}, 5 * 60 * 1000);
+			} else {
+				gettingAccount = false
 			}
 
 			if (!/checklive/.test(parentId) && !back) {
