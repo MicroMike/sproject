@@ -87,7 +87,7 @@ setInterval(async () => {
 
 setTimeout(() => {
 	waitForLoad = false
-}, 6 * 1000);
+}, 30 * 1000);
 
 setInterval(async () => {
 	gain = plays * 0.004 * 0.9 / ++time
@@ -204,7 +204,7 @@ setInterval(() => {
 let gettingAccount = false
 
 const getAccountNotUsed = async (c, checkAccount) => {
-	if (gettingAccount) {
+	if (waitForLoad || gettingAccount) {
 		await wait(1 * 1000)
 		c.emit('loaded')
 	}
