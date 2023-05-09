@@ -203,13 +203,15 @@ setInterval(() => {
 
 let gettingAccount = false
 
-const getAccountNotUsed = async (c, checkAccount) => {
-	if (waitForLoad || gettingAccount) {
-		await wait(1 * 1000)
-		c.emit('loaded')
-	}
+const getAccountNotUsed = async (c, checkAccount, check) => {
+	if (!check) {
+		if (waitForLoad || gettingAccount) {
+			await wait(3 * 1000)
+			c.emit('loaded')
+		}
 
-	gettingAccount = true
+		gettingAccount = true
+	}
 
 	const isCheck = /check/.test(c.parentId)
 	const checkA = checkAccount && await findAccounts(checkAccount)
@@ -301,7 +303,7 @@ try {
 				client.timeout = setTimeout(() => {
 					exit(client)
 				}, 5 * 60 * 1000);
-			} else {
+			} else if (!/check/.test(parentId)) {
 				gettingAccount = false
 			}
 
