@@ -233,7 +233,6 @@ const getAccountNotUsed = async (c, checkAccount, check) => {
 	if (accountAlreadyUsed || !account) {
 		await wait(3 * 1000)
 		c.emit('loaded')
-		// await getAccountNotUsed(c)
 	} else {
 		usedAccounts.push(account)
 		c.infos.account = account
@@ -258,7 +257,7 @@ const isWaiting = (props, client) => {
 		}, 5 * 60 * 1000);
 		streams[streamId] = client
 
-		getAccountNotUsed(client, checkAccount)
+		getAccountNotUsed(client, checkAccount, /check/.test(client.parentId))
 	} else {
 		client.emit('loaded')
 	}
