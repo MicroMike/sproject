@@ -210,7 +210,7 @@ const getAccountNotUsed = async (c, checkAccount, check) => {
 			c.emit('loaded')
 		}
 
-		gettingAccount = true
+		// gettingAccount = true
 	}
 
 	const isCheck = /check/.test(c.parentId)
