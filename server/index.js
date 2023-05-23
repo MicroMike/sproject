@@ -244,7 +244,7 @@ const getAccountNotUsed = async (c, checkAccount, check) => {
 const isWaiting = (props, client) => {
 	const { parentId, streamId, max, checkAccount } = props
 
-	const tooManyLoad = Object.values(streams).filter(s => s.parentId === parentId && s.infos && s.infos.other).length > 0
+	const tooManyLoad = Object.values(streams).filter(s => s.parentId === parentId && s.infos && s.infos.other).length > 3
 	const isMax = Object.values(streams).filter(s => s.parentId === parentId).length >= max
 
 	if (checkAccount || /check/.test(client.parentId) || (!tooManyLoad && !isMax)) {
