@@ -8,7 +8,6 @@ const {
 } = require('./mongo')
 const routes = require('./routes')
 const { wait } = require('./helpers')
-const { rand } = require('./helpers')
 
 const express = require("express");
 const mongoose = require('mongoose');
@@ -17,6 +16,7 @@ const _ = require("lodash");
 
 const app = express(); // create express app
 app.use(express.static("build"));
+app.use('/manage',express.static("build"));
 
 const http = require('http').createServer(routes(app));
 
