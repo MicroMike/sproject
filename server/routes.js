@@ -2,9 +2,11 @@ const {
 	MAccount,
 	MCard,
 	getAccount,
+	getAllAccount,
 	check,
 	getDelAccount,
 	update,
+	getAllAccounts,
 } = require('./mongoSchema')
 const { rand } = require('./helpers')
 const fs = require('fs');
@@ -42,6 +44,11 @@ module.exports = (app) => {
 					getAccount(query.check === 'true', true, (r) => res.json(r))
 				}
 
+				break
+			}
+
+			case '/accountsAll': {
+				getAllAccounts((r) => res.json(r))
 				break
 			}
 

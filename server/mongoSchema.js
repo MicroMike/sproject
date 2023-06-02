@@ -52,6 +52,18 @@ const getAccount = async (isCheck = false, multi = false, callback) => {
 	})
 }
 
+const getAllAccounts = async (callback) => {
+	const findParams = {}
+
+	MAccount.find(findParams, (err, Ra) => {
+		if (!Ra || Ra.length === 0) {
+			callback(false)
+		} else {
+			callback(Ra || [])
+		}
+	})
+}
+
 const findAccounts = (params, callback) => {
 	MAccount.find({ "account": { "$regex": params, "$options": "i" }, del: { $ne: true }, pause: { $ne: true } }, (err, Ra) => {
 		callback(Ra || [])
@@ -107,6 +119,7 @@ module.exports = {
 	MSong,
 	MCard,
 	getAccount,
+	getAllAccounts,
 	check,
 	del,
 	getDelAccount,
