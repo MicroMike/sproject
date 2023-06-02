@@ -1,9 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { createRef, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { orderBy } from 'lodash';
 import './App.css';
-import { io } from 'socket.io-client';
+import io from 'socket.io-client';
 
 const EKeys = [
 	'player',
@@ -19,6 +18,7 @@ const EKeys = [
 
 const DoubleBtn = ({ label, callback }: any) => {
 	const [active, setActive] = useState(false)
+
 	return <>
 		{!active && <button onClick={() => setActive(true)} >{label}</button>}
 		{active && <button onClick={() => {
