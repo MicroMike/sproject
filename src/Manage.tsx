@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect, useRef, useState } from 'react';
+import { createRef, useEffect, useRef, useState } from 'react';
 import { orderBy } from 'lodash';
 import './App.css';
+import { io } from 'socket.io-client';
 
 const EKeys = [
 	'player',
@@ -33,11 +34,9 @@ const update = (account: string, key: string, value: string) => {
 
 const Manage = () => {
 	const [accounts, setAccounts] = useState<any[]>([])
-	const filterKey = useRef<{ k: string, asc: boolean }>({ k: '', asc: true })
-
-	const setFilterKey = (fn: (fk: any) => { k: string, asc: boolean }) => {
-		filterKey.current = fn(filterKey.current)
-	}
+	const [filterKey, setFilterKey] = useState<{ k: string, asc: boolean }>({ k: '', asc: true })
+	const [searchValue, setSearchValue] = useState<{ [K: string]: any }>([])
+	const [socket, setSocket] = useState<any>()
 
 	useEffect(() => {
 		fetch('/accountsAll').then((res) => res).then((r) => r.json().then((w) => setAccounts(w.map(({ _id, __v, ...other }: any) => ({
@@ -46,20 +45,42 @@ const Manage = () => {
 			login: other.account?.split(':')[1],
 			pass: other.account?.split(':')[2],
 		})))))
+
+		const socketio = io('http://149.102.132.27:3001');
+		setSocket(socketio)
 	}, [])
 
 	useEffect(() => {
-		setAccounts(orderBy(accounts, filterKey.current.k, filterKey.current.asc ? 'asc' : 'desc'))
-	}, [filterKey])
+		if (!socket) return
+		console.log('socket connected')
+	}, [socket])
+
+	useEffect(() => {
+		setAccounts(orderBy(accounts, filterKey.k, filterKey.asc ? 'asc' : 'desc'))
+	}, [filterKey.k, filterKey.asc])
+
+	const reg = (val: string, compareTo: any) => {
+		const regexp = new RegExp(val, 'i')
+		return !val || regexp.test(JSON.stringify(compareTo))
+	}
+
+	console.log('searchValue', Object.values(searchValue).length)
 
 	return <>
 		<table border={1}>
-			<tr>{EKeys.map((v: any) => <td>{v}<button onClick={() => setFilterKey((k) => ({ k: v, asc: k.k === v ? !k.asc : true }))}>{`>`}</button></td>
-			)}</tr>
-			{accounts.map((a: any) =>
+			<tr>
+				{EKeys.map((v: string) =>
+					<td>
+						{v}
+						<input onChange={(e) => setSearchValue((searchVals) => ({ ...searchVals, [v]: e.target.value }))} />
+						<button onClick={() => setFilterKey((k) => ({ k: v, asc: k.k === v ? !k.asc : true }))}>{`>`}</button>
+					</td>
+				)}
+			</tr>
+			{(accounts).filter((a) => Object.entries(searchValue).filter(([k, searchVal]: any) => reg(searchVal, a[k])).length === Object.values(searchValue).length).map((a: any) =>
 				<tr>
 					{Object.values(EKeys).map((v: any, index) =>
-						<td style={{ backgroundColor: a['del'] ? 'red' : a['parent'] ? 'green' : 'none' }}>
+						<td>
 							{index < 3 && a[v]}
 							{index >= 3 && <DoubleBtn label={!a[v] || a[v] === false ? 'false' : 'true'} callback={() => update(a.account, v, (!a[v]).toString())} />}
 						</td>

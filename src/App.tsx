@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import io from 'socket.io-client';
 
-var socket = io('http://149.102.132.27:3000');
 
 interface IData {
 	numbers?: any
@@ -36,12 +35,20 @@ interface IStream {
 }
 
 function App() {
-	const [data, setData] = React.useState<IData>({})
-	const [leftData, setLeftData] = React.useState<any>({})
-	const [streams, setStreams] = React.useState<{ ok?: IStreamsInfo[], other?: IStreamsInfo[], freeze?: IStreamsInfo[] }>({})
-	const [screenshots, setScreenshots] = React.useState<IStream[]>([])
+	const [data, setData] = useState<IData>({})
+	const [leftData, setLeftData] = useState<any>({})
+	const [streams, setStreams] = useState<{ ok?: IStreamsInfo[], other?: IStreamsInfo[], freeze?: IStreamsInfo[] }>({})
+	const [screenshots, setScreenshots] = useState<IStream[]>([])
+	const [socket, setSocket] = useState<any>()
 
-	React.useEffect(() => {
+	useEffect(() => {
+		const socketio = io('http://149.102.132.27:3000');
+		setSocket(socketio)
+	}, [])
+
+	useEffect(() => {
+		if (!socket) return
+
 		socket.on('activate', () => {
 			socket.emit('web')
 		})
@@ -53,7 +60,7 @@ function App() {
 			}, 5 * 1000)
 		})
 
-		socket.on('allData', d => {
+		socket.on('allData', (d: { [x: string]: any; numbers: any; numbersPlaying: any; errs: any; resultRatio: any; parentsMax: any; }) => {
 			const {
 				numbers,
 				numbersPlaying,
@@ -98,11 +105,11 @@ function App() {
 			setStreams(filter)
 		})
 
-		socket.on('clearStream', (delList) => {
+		socket.on('clearStream', (_delList: any) => {
 			// document.querySelector('#del').innerHTML = delList
 		})
 
-		socket.on('delList', (delList) => {
+		socket.on('delList', (_delList: any) => {
 			// document.querySelector('#del').innerHTML = delList
 		})
 
@@ -110,13 +117,13 @@ function App() {
 			setScreenshots((s) => [...s, props])
 		})
 
-		socket.on('endStream', streamId => {
+		socket.on('endStream', (_streamId: any) => {
 			// const isDom = streamId && document.querySelector('#class' + streamId)
 			// isDom && isDom.parentElement.remove()
 		})
-	}, [])
+	}, [socket])
 
-	React.useEffect(() => {
+	useEffect(() => {
 		// console.log('data', data)
 		// console.log('leftData', leftData)
 		// console.log('streams', streams)
@@ -183,12 +190,12 @@ function App() {
 		btn.innerText = btn.innerText === 'streamOn' ? 'streamOff' : 'streamOn'
 	}
 
-	const runScript = (btn: any) => {
+	const runScript = (_btn: any) => {
 		// const scriptText = document.querySelector('#script' + btn.className).value
 		// socket.emit('runScript', { streamId: btn.className, scriptText })
 	}
 
-	const runCode = (btn: any) => {
+	const runCode = (_btn: any) => {
 		// const scriptText = document.querySelector('#scriptCode' + btn.className).value
 		// socket.emit('runCode', { id: btn.className, scriptText })
 	}
@@ -223,7 +230,7 @@ function App() {
 	const displayData = () => {
 		return (
 			<>
-				{data.numbers && Object.entries(data.numbers).map(([k, v], i) => {
+				{data.numbers && Object.entries(data.numbers).map(([k, v], _i) => {
 					const val = v
 					const val2 = data.numbersPlaying[k]
 					const ratio = data.resultRatio[k]
