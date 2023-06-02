@@ -59,7 +59,7 @@ const Manage = () => {
 			{accounts.map((a: any) =>
 				<tr>
 					{Object.values(EKeys).map((v: any, index) =>
-						<td>
+						<td style={{ backgroundColor: a['del'] ? 'red' : a['parent'] ? 'green' : 'none' }}>
 							{index < 3 && a[v]}
 							{index >= 3 && <DoubleBtn label={!a[v] || a[v] === false ? 'false' : 'true'} callback={() => update(a.account, v, (!a[v]).toString())} />}
 						</td>
