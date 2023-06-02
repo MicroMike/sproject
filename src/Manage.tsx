@@ -47,7 +47,7 @@ const Manage = () => {
 			pass: other.account?.split(':')[2],
 		})))))
 
-		const socketio = io('http://149.102.132.27:3001');
+		const socketio = io('http://149.102.132.27/manage:3001');
 		setSocket(socketio)
 	}, [])
 
