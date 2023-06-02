@@ -1,9 +1,3 @@
-const {
-	getCheckAccounts,
-	check,
-	del,
-	actions,
-} = require('./mongo')
 const routes = require('./routes')
 const shell = require('shelljs')
 
