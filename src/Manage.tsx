@@ -38,6 +38,7 @@ const Manage = () => {
 	const [filterKey, setFilterKey] = useState<{ k: string, asc: boolean }>({ k: '', asc: true })
 	const [searchValue, setSearchValue] = useState<{ [K: string]: any }>([])
 	const [socket, setSocket] = useState<any>()
+	const [copy, setCopy] = useState(false)
 
 	useEffect(() => {
 		fetch('/accountsAll').then((res) => res).then((r) => r.json().then((w) => setAccounts(w.map(({ _id, __v, ...other }: any) => ({
@@ -65,9 +66,20 @@ const Manage = () => {
 		return !val || regexp.test(JSON.stringify(compareTo))
 	}
 
-	console.log('searchValue', Object.values(searchValue).length)
-
 	return <>
+		{copy && <div style={{
+			position: 'absolute',
+			width: '100px',
+			height: '25px',
+			backgroundColor: 'green',
+			left: '50%',
+			top: '10px',
+			padding: '5px',
+			borderRadius: '5px',
+			color: 'white',
+			lineHeight: '25px',
+			textAlign: 'center',
+		}}>Copied !</div>}
 		<table border={1}>
 			<tr>
 				{EKeys.map((v: string) =>
@@ -82,7 +94,16 @@ const Manage = () => {
 				<tr>
 					{Object.values(EKeys).map((v: any, index) =>
 						<td>
-							{index < 3 && a[v]}
+							<span id={`${v}-${index}`} onClick={() => {
+								const copyText = document.getElementById(`${v}-${index}`)
+								navigator.clipboard.writeText(copyText?.textContent || '')
+								setCopy(true)
+								setTimeout(() => {
+									setCopy(false)
+								}, 2000);
+							}}>
+								{index < 3 && a[v]}
+							</span>
 							{index >= 3 && <DoubleBtn label={!a[v] || a[v] === false ? 'false' : 'true'} callback={() => update(a.account, v, (!a[v]).toString())} />}
 						</td>
 					)}
