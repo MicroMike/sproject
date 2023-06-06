@@ -8,12 +8,13 @@ const EKeys = [
 	'player',
 	"login",
 	"pass",
-	"check",
 	"del",
-	"pause",
 	"parent",
-	"used",
-	"used2",
+	"parentId",
+	"check",
+	"pause",
+	// "used",
+	// "used2",
 ]
 
 const DoubleBtn = ({ label, callback }: any) => {
