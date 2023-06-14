@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { orderBy } from 'lodash';
 import './App.css';
 import io from 'socket.io-client';
+import _ from 'lodash';
 
 const EKeys = [
 	'player',
@@ -15,6 +16,18 @@ const EKeys = [
 	"pause",
 	// "used",
 	// "used2",
+]
+
+const EBtnKeys = [
+	"parent",
+	"del",
+	"check",
+	"pause",
+]
+
+const ECopyKeys = [
+	"login",
+	"pass",
 ]
 
 const DoubleBtn = ({ label, callback }: any) => {
@@ -35,19 +48,21 @@ const update = (account: string, key: string, value: string) => {
 }
 
 const Manage = () => {
-	const [accounts, setAccounts] = useState<any[]>([])
+	const [accounts, setAccounts] = useState<any>([])
 	const [filterKey, setFilterKey] = useState<{ k: string, asc: boolean }>({ k: '', asc: true })
 	const [searchValue, setSearchValue] = useState<{ [K: string]: any }>([])
 	const [socket, setSocket] = useState<any>()
 	const [copy, setCopy] = useState(false)
 
 	useEffect(() => {
-		fetch('/accountsAll').then((res) => res).then((r) => r.json().then((w) => setAccounts(w.map(({ _id, __v, ...other }: any) => ({
-			...other,
-			player: other.account?.split(':')[0],
-			login: other.account?.split(':')[1],
-			pass: other.account?.split(':')[2],
-		})))))
+		fetch('/accountsAll').then((res) => res).then((r) => r.json().then((w) => setAccounts(
+			_.keyBy(w.map(({ _id, __v, ...other }: any) => ({
+				...other,
+				player: other.account?.split(':')[0],
+				login: other.account?.split(':')[1],
+				pass: other.account?.split(':')[2],
+			})), 'account')
+		)))
 
 		const socketio = io('http://149.102.132.27/manage:3001');
 		setSocket(socketio)
@@ -59,7 +74,7 @@ const Manage = () => {
 	}, [socket])
 
 	useEffect(() => {
-		setAccounts(orderBy(accounts, filterKey.k, filterKey.asc ? 'asc' : 'desc'))
+		setAccounts(_.keyBy(orderBy(accounts, filterKey.k, filterKey.asc ? 'asc' : 'desc'), 'account'))
 	}, [filterKey.k, filterKey.asc])
 
 	const reg = (val: string, compareTo: any) => {
@@ -91,11 +106,13 @@ const Manage = () => {
 					</td>
 				)}
 			</tr>
-			{(accounts).filter((a) => Object.entries(searchValue).filter(([k, searchVal]: any) => reg(searchVal, a[k])).length === Object.values(searchValue).length).map((a: any) =>
+			{Object.values(accounts).filter((a: any) => Object.entries(searchValue).filter(([k, searchVal]: any) => reg(searchVal, a[k])).length === Object.values(searchValue).length).map((a: any) =>
 				<tr>
 					{Object.values(EKeys).map((v: any, index) =>
-						<td>
+						<td key={`${v}-${a.account}`}>
 							<span id={`${v}-${index}`} onClick={() => {
+								if (!ECopyKeys.includes(v)) return
+
 								const copyText = document.getElementById(`${v}-${index}`)
 								navigator.clipboard.writeText(copyText?.textContent || '')
 								setCopy(true)
@@ -103,9 +120,18 @@ const Manage = () => {
 									setCopy(false)
 								}, 2000);
 							}}>
-								{index < 3 && a[v]}
+								{!EBtnKeys.includes(v) && <>
+									<input id={`${v}-${index}-input`} value={a[v]} onChange={(e) => setAccounts((acc: any) => {
+										const newAcc: any = _.clone(acc)
+										newAcc[a.account][v] = e.target.value || undefined
+										return newAcc
+									})} />
+									<DoubleBtn label="Up" callback={() => {
+										const value = accounts[a.account][v]
+										value && update(a.account, v, value)
+									}} /></>}
 							</span>
-							{index >= 3 && <DoubleBtn label={!a[v] || a[v] === false ? 'false' : 'true'} callback={() => update(a.account, v, (!a[v]).toString())} />}
+							{EBtnKeys.includes(v) && <DoubleBtn label={!a[v] || a[v] === false ? 'false' : 'true'} callback={() => update(a.account, v, (!a[v]).toString())} />}
 						</td>
 					)}
 				</tr>

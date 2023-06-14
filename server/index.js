@@ -16,7 +16,7 @@ const _ = require("lodash");
 
 const app = express(); // create express app
 app.use(express.static("build"));
-app.use('/manage',express.static("build"));
+app.use('/manage', express.static("build"));
 
 const http = require('http').createServer(routes(app));
 
@@ -214,7 +214,7 @@ const getAccountNotUsed = async (c, checkAccount, check) => {
 	}
 
 	const isCheck = /check/.test(c.parentId)
-	const checkA = checkAccount && await findAccounts(checkAccount)
+	const checkA = checkAccount && await findAccounts(checkAccount, isCheck)
 
 	// const appleAccounts = accounts.filter((f) => /^apple/.test(f.account))
 	// const otherAccounts = accounts.filter((f) => !/^apple/.test(f.account))

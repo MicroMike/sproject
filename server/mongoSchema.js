@@ -65,8 +65,8 @@ const getAllAccounts = async (callback) => {
 	})
 }
 
-const findAccounts = (params, callback) => {
-	MAccount.find({ "account": { "$regex": params, "$options": "i" }, del: { $ne: true }, pause: { $ne: true } }, (err, Ra) => {
+const findAccounts = (params, check, callback) => {
+	MAccount.find({ "account": { "$regex": params, "$options": "i" }, check: { $ne: !check }, del: { $ne: true }, pause: { $ne: true } }, (err, Ra) => {
 		callback(Ra || [])
 	})
 }
