@@ -23,7 +23,7 @@ const http = require('http').createServer(routes(app));
 const io = new Server(http, {
 	pingTimeout: 1000 * 60 * 5,
 	cors: {
-		origin: "*",
+		// origin: "*",
 	}
 });
 
