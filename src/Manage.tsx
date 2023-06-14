@@ -6,14 +6,14 @@ import io from 'socket.io-client';
 import _ from 'lodash';
 
 const EKeys = [
+	"parent",
 	'player',
 	"login",
 	"pass",
 	"del",
-	"parent",
-	"parentId",
-	"check",
 	"pause",
+	"check",
+	"parentId",
 	// "used",
 	// "used2",
 ]
@@ -108,35 +108,35 @@ const Manage = () => {
 			</tr>
 			{Object.values(accounts).filter((a: any) => Object.entries(searchValue).filter(([k, searchVal]: any) => reg(searchVal, a[k])).length === Object.values(searchValue).length).map((a: any) =>
 				<tr>
-					{Object.values(EKeys).map((v: any, index) =>
-						<td key={`${v}-${a.account}`}>
-							<span id={`${v}-${index}`} onClick={() => {
-								if (!ECopyKeys.includes(v)) return
+					{Object.values(EKeys).map((v, index) =>
+						<td key={`${v}-${a.account}`} style={{ backgroundColor: v === 'del' && a[v] ? 'red' : /pause|check/.test(v) && a[v] ? 'orange' : v === 'parent' && a[v] ? 'blue':'none' }}>
+					<span id={`${v}-${index}`} onClick={() => {
+						if (!ECopyKeys.includes(v)) return
 
-								const copyText = document.getElementById(`${v}-${index}`)
-								navigator.clipboard.writeText(copyText?.textContent || '')
-								setCopy(true)
-								setTimeout(() => {
-									setCopy(false)
-								}, 2000);
-							}}>
-								{!EBtnKeys.includes(v) && <>
-									<input id={`${v}-${index}-input`} value={a[v]} onChange={(e) => setAccounts((acc: any) => {
-										const newAcc: any = _.clone(acc)
-										newAcc[a.account][v] = e.target.value || undefined
-										return newAcc
-									})} />
-									<DoubleBtn label="Up" callback={() => {
-										const value = accounts[a.account][v]
-										value && update(a.account, v, value)
-									}} /></>}
-							</span>
-							{EBtnKeys.includes(v) && <DoubleBtn label={!a[v] || a[v] === false ? 'false' : 'true'} callback={() => update(a.account, v, (!a[v]).toString())} />}
-						</td>
-					)}
-				</tr>
+						const copyText = document.getElementById(`${v}-${index}`)
+						navigator.clipboard.writeText(copyText?.textContent || '')
+						setCopy(true)
+						setTimeout(() => {
+							setCopy(false)
+						}, 2000);
+					}}>
+						{!EBtnKeys.includes(v) && <>
+							<input id={`${v}-${index}-input`} value={a[v]} onChange={(e) => setAccounts((acc: any) => {
+								const newAcc: any = _.clone(acc)
+								newAcc[a.account][v] = e.target.value || undefined
+								return newAcc
+							})} />
+							<DoubleBtn label="Up" callback={() => {
+								const value = accounts[a.account][v]
+								value && update(a.account, v, value)
+							}} /></>}
+					</span>
+					{EBtnKeys.includes(v) && <DoubleBtn label={!a[v] || a[v] === false ? 'false' : 'true'} callback={() => update(a.account, v, (!a[v]).toString())} />}
+				</td>
 			)}
-		</table>
+		</tr>
+			)}
+	</table >
 	</>
 }
 
