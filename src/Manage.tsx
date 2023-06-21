@@ -42,9 +42,9 @@ const DoubleBtn = ({ label, callback }: any) => {
 	</>
 }
 
-const update = (account: string, key: string, value: string) => {
+const update = (account: string, key: string, value: string, cb: () => void) => {
 	console.log(`http://149.102.132.27:3000/update?${account}/${key}/${value}`)
-	fetch(`http://149.102.132.27:3000/update?${account}/${key}/${value}`)
+	fetch(`http://149.102.132.27:3000/update?${account}/${key}/${value}`).then(cb)
 }
 
 const Manage = () => {
@@ -54,7 +54,7 @@ const Manage = () => {
 	const [socket, setSocket] = useState<any>()
 	const [copy, setCopy] = useState(false)
 
-	useEffect(() => {
+	const setData = () => {
 		fetch('/accountsAll').then((res) => res).then((r) => r.json().then((w) => setAccounts(
 			_.keyBy(w.map(({ _id, __v, ...other }: any) => ({
 				...other,
@@ -63,7 +63,10 @@ const Manage = () => {
 				pass: other.account?.split(':')[2],
 			})), 'account')
 		)))
+	}
 
+	useEffect(() => {
+		setData()
 		const socketio = io('http://149.102.132.27/manage:3001');
 		setSocket(socketio)
 	}, [])
@@ -109,34 +112,34 @@ const Manage = () => {
 			{Object.values(accounts).filter((a: any) => Object.entries(searchValue).filter(([k, searchVal]: any) => reg(searchVal, a[k])).length === Object.values(searchValue).length).map((a: any) =>
 				<tr>
 					{Object.values(EKeys).map((v, index) =>
-						<td key={`${v}-${a.account}`} style={{ backgroundColor: v === 'del' && a[v] ? 'red' : /pause|check/.test(v) && a[v] ? 'orange' : v === 'parent' && a[v] ? 'blue':'none' }}>
-					<span id={`${v}-${index}`} onClick={() => {
-						if (!ECopyKeys.includes(v)) return
+						<td key={`${v}-${a.account}`} style={{ backgroundColor: v === 'del' && a[v] ? 'red' : /pause|check/.test(v) && a[v] ? 'orange' : v === 'parent' && a[v] ? 'blue' : 'none' }}>
+							<span id={`${v}-${index}`} onClick={() => {
+								if (!ECopyKeys.includes(v)) return
 
-						const copyText = document.getElementById(`${v}-${index}`)
-						navigator.clipboard.writeText(copyText?.textContent || '')
-						setCopy(true)
-						setTimeout(() => {
-							setCopy(false)
-						}, 2000);
-					}}>
-						{!EBtnKeys.includes(v) && <>
-							<input id={`${v}-${index}-input`} value={a[v]} onChange={(e) => setAccounts((acc: any) => {
-								const newAcc: any = _.clone(acc)
-								newAcc[a.account][v] = e.target.value || undefined
-								return newAcc
-							})} />
-							<DoubleBtn label="Up" callback={() => {
-								const value = accounts[a.account][v]
-								value && update(a.account, v, value)
-							}} /></>}
-					</span>
-					{EBtnKeys.includes(v) && <DoubleBtn label={!a[v] || a[v] === false ? 'false' : 'true'} callback={() => update(a.account, v, (!a[v]).toString())} />}
-				</td>
+								const copyText = document.getElementById(`${v}-${index}`)
+								navigator.clipboard.writeText(copyText?.textContent || '')
+								setCopy(true)
+								setTimeout(() => {
+									setCopy(false)
+								}, 2000);
+							}}>
+								{!EBtnKeys.includes(v) && <>
+									<input id={`${v}-${index}-input`} value={a[v]} onChange={(e) => setAccounts((acc: any) => {
+										const newAcc: any = _.clone(acc)
+										newAcc[a.account][v] = e.target.value || undefined
+										return newAcc
+									})} />
+									<DoubleBtn label="Up" callback={() => {
+										const value = accounts[a.account][v]
+										value && update(a.account, v, value, setData)
+									}} /></>}
+							</span>
+							{EBtnKeys.includes(v) && <DoubleBtn label={!a[v] || a[v] === false ? 'false' : 'true'} callback={() => update(a.account, v, (!a[v]).toString(), setData)} />}
+						</td>
+					)}
+				</tr>
 			)}
-		</tr>
-			)}
-	</table >
+		</table >
 	</>
 }
 
