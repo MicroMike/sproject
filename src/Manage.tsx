@@ -14,6 +14,7 @@ const EKeys = [
 	"pause",
 	"check",
 	"parentId",
+	"remove",
 	// "used",
 	// "used2",
 ]
@@ -23,6 +24,7 @@ const EBtnKeys = [
 	"del",
 	"check",
 	"pause",
+	"remove",
 ]
 
 const ECopyKeys = [

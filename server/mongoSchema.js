@@ -84,6 +84,15 @@ const getDelAccount = async (callback) => {
 }
 
 const update = async (acc, key, value, callback) => {
+	if (key === 'remove') {
+		MAccount.deleteOne({ account: { "$regex": acc, "$options": "i" } }, (err, Ra) => {
+			if (err || !Ra || Ra.length === 0) return callback('notFound');
+			return callback('removed');
+		})
+
+		return
+	}
+
 	MAccount.find({ account: { "$regex": acc, "$options": "i" } }, (err, Ra) => {
 		if (err || !Ra || Ra.length === 0) return callback('notFound');
 
