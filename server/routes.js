@@ -88,7 +88,7 @@ module.exports = (app) => {
 						}
 						else {
 							accounts[a] = true
-							const r = new MAccount({ account: a, check: false, del: false });
+							const r = new MAccount({ account: a, check: false, del: false, date:Date.now() });
 							r.save((err, a) => { console.log(a) })
 						}
 					})

@@ -13,6 +13,7 @@ const SAccount = new mongoose.Schema({
 	country: String,
 	parent: Boolean,
 	parentId: String,
+	date: Date,
 });
 const MAccount = mongoose.model('Account', SAccount, 'accounts');
 
