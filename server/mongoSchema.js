@@ -67,7 +67,7 @@ const getAllAccounts = async (callback) => {
 }
 
 const findAccounts = (params, check, callback) => {
-	const options = { "account": { "$regex": params, "$options": "i" }, del: { $ne: true } }
+	const options = { "account": { "$regex": params.replaceAll('+', '\\+'), "$options": "i" }, del: { $ne: true } }
 
 	if (check) {
 		options.pause = { $ne: true }
