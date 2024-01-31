@@ -237,7 +237,7 @@ const getAccountNotUsed = async (c, checkAccount, check) => {
 
 	const accountAlreadyUsed = usedAccounts.includes(account)
 
-	if (accountAlreadyUsed || isExpired || !account) {
+	if (accountAlreadyUsed || (expire && isExpired) || !account) {
 		await wait(3 * 1000)
 		c.emit('loaded')
 	} else {
