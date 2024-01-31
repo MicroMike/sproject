@@ -228,12 +228,16 @@ const getAccountNotUsed = async (c, checkAccount, check) => {
 
 	usedAccounts = Object.values(streams).map((c) => c.account)
 
-	const { account, country = 'fr' } = _.shuffle(Ra.filter((a) => !usedAccounts.includes(a.account)))[0] || {}
+	const { account, country = 'fr', expire } = _.shuffle(Ra.filter((a) => !usedAccounts.includes(a.account)))[0] || {}
 	// const account = await getAccount(isCheck)
+
+	const dNow = new Date()
+	const dExpire = new Date(expire)
+	const isExpired = dNow.getTime() < dExpire.getTime()
 
 	const accountAlreadyUsed = usedAccounts.includes(account)
 
-	if (accountAlreadyUsed || !account) {
+	if (accountAlreadyUsed || isExpired || !account) {
 		await wait(3 * 1000)
 		c.emit('loaded')
 	} else {
