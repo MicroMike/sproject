@@ -14,6 +14,7 @@ const SAccount = new mongoose.Schema({
 	parent: Boolean,
 	parentId: String,
 	date: Date,
+	expire: Date,
 });
 const MAccount = mongoose.model('Account', SAccount, 'accounts');
 
@@ -104,7 +105,16 @@ const update = async (acc, key, value, callback) => {
 		if (err || !Ra || Ra.length === 0) return callback('notFound');
 
 		Ra.forEach(a => {
-			a[key] = value
+			if (key === 'login') {
+				const [p, l, pa] = a.account.split(':')
+				a.account = `${p}:${value}:${pa}`
+			} else if (key === 'pass') {
+				const [p, l, pa] = a.account.split(':')
+				a.account = `${p}:${l}:${value}`
+			}
+			else {
+				a[key] = value
+			}
 			a.save()
 		});
 
