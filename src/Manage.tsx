@@ -16,6 +16,7 @@ const EKeys = [
 	"parentId",
 	"remove",
 	"date",
+	"expire",
 	// "used",
 	// "used2",
 ]
@@ -53,7 +54,7 @@ const update = (account: string, key: string, value: string, cb: () => void) => 
 const Manage = () => {
 	const [accounts, setAccounts] = useState<any>([])
 	const [filterKey, setFilterKey] = useState<{ k: string, asc: boolean }>({ k: '', asc: true })
-	const [searchValue, setSearchValue] = useState<{ [K: string]: any }>({ del: 'false' })
+	const [searchValue, setSearchValue] = useState<{ [K: string]: any }>({ del: 'false', pause: 'false' })
 	const [socket, setSocket] = useState<any>()
 	const [copy, setCopy] = useState(false)
 
