@@ -113,7 +113,7 @@ const Manage = () => {
 					</td>
 				)}
 			</tr>
-			{Object.values(accounts).filter((a: any) => Object.entries(searchValue).filter(([k, searchVal]: any) => reg(searchVal, a[k])).length === Object.values(searchValue).length).map((a: any) =>
+			{Object.values(accounts).filter((a: any) => Object.entries(searchValue).filter(([k, searchVal]: any) => (!searchVal && !a[k]) || reg(searchVal, a[k])).length === Object.values(searchValue).length).map((a: any) =>
 				<tr>
 					{Object.values(EKeys).map((v, index) =>
 						<td key={`${v}-${a.account}`} style={{ backgroundColor: v === 'del' && a[v] ? 'red' : /pause|check/.test(v) && a[v] ? 'orange' : v === 'parent' && a[v] ? 'blue' : 'none' }}>
