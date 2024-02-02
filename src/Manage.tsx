@@ -89,6 +89,8 @@ const Manage = () => {
 		return !val || regexp.test(JSON.stringify(compareTo))
 	}
 
+	const date = new Date()
+
 	return <>
 		{copy && <div style={{
 			position: 'absolute',
@@ -128,7 +130,7 @@ const Manage = () => {
 								}, 2000);
 							}}>
 								{!EBtnKeys.includes(v) && <>
-									<input id={`${v}-${index}-input`} value={a[v]} onChange={(e) => setAccounts((acc: any) => {
+									<input id={`${v}-${index}-input`} value={v === 'expire' ? (date.getTime() - a[v]) / 1000 / 60 : a[v]} onChange={(e) => setAccounts((acc: any) => {
 										const newAcc: any = _.clone(acc)
 										newAcc[a.account][v] = e.target.value || undefined
 										return newAcc
