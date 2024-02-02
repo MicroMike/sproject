@@ -130,7 +130,7 @@ const Manage = () => {
 								}, 2000);
 							}}>
 								{!EBtnKeys.includes(v) && <>
-									<input id={`${v}-${index}-input`} value={v === 'expire' ? (date.getTime() - a[v]) / 1000 / 60 : a[v]} onChange={(e) => setAccounts((acc: any) => {
+									<input id={`${v}-${index}-input`} value={v === 'expire' ? Math.ceil((a[v] - date.getTime()) / 1000 / 60) : a[v]} onChange={(e) => setAccounts((acc: any) => {
 										const newAcc: any = _.clone(acc)
 										newAcc[a.account][v] = e.target.value || undefined
 										return newAcc
