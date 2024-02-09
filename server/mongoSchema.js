@@ -44,12 +44,28 @@ const MCard = mongoose.model('Card', SCard, 'cards');
 const getAccount = async (isCheck = false, multi = false, callback) => {
 	const findParams = { check: { $ne: isCheck ? false : true }, del: { $ne: true }, pause: { $ne: true } }
 
+	if (!multi) {
+		const dNow = new Date()
+		findParams.expire = { $lt: dNow.getTime() }
+	}
 
 	MAccount.find(findParams, (err, Ra) => {
 		if (!Ra || Ra.length === 0) {
 			callback(false)
 		} else {
 			const a = Ra[rand(Ra.length - 1)]
+
+			if (!multi && a) {
+				const d = new Date()
+				const time = d.getTime()
+				const delay = rand(120, 60) * 60 * 1000
+
+				const newTime = time + delay
+
+				a.expire = newTime
+				a.save()
+			}
+
 			callback(multi ? Ra || [] : a && a.account)
 		}
 	})

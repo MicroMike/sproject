@@ -2,6 +2,7 @@ const {
 	getCheckAccounts,
 	getAccounts,
 	findAccounts,
+	getAccount,
 	check,
 	del,
 	actions,
@@ -204,68 +205,51 @@ setInterval(() => {
 	})
 }, 1000);
 
-let gettingAccount = false
+const getAccountNotUsed = async (c, checkAccount, isCheck) => {
+	let acc;
 
-const getAccountNotUsed = async (c, checkAccount, check) => {
-	if (!check) {
-		if (waitForLoad || gettingAccount) {
-			await wait(3 * 1000)
-			c.emit('loaded')
-		}
-
-		// gettingAccount = true
+	if (checkAccount) {
+		const accounts = await findAccounts(checkAccount, isCheck)
+		acc = accounts[0]
+	} else {
+		acc = await getAccount(isCheck)
 	}
 
-	const isCheck = /check/.test(c.parentId)
-	const checkA = checkAccount && await findAccounts(checkAccount, isCheck)
+	const { account, country = 'fr' } = acc
 
-	// const appleAccounts = accounts.filter((f) => /^apple/.test(f.account))
-	// const otherAccounts = accounts.filter((f) => !/^apple/.test(f.account))
-	// const finalAccounts = rand(6, 1) % 6 === 0 && appleAccounts.length > 0 ? appleAccounts : otherAccounts
-	const finalAccounts = accounts
-
-	const Ra = (checkAccount ? checkA : isCheck ? checkAccounts : finalAccounts) || []
-
-	usedAccounts = Object.values(streams).map((c) => c.account)
-
-	const { account, country = 'fr', expire } = _.shuffle(Ra.filter((a) => !usedAccounts.includes(a.account)))[0] || {}
-	// const account = await getAccount(isCheck)
-
-	const dNow = new Date()
-	const dExpire = new Date(expire)
-	const isExpired = dNow.getTime() < dExpire.getTime()
-
-	const accountAlreadyUsed = usedAccounts.includes(account)
-
-	if (accountAlreadyUsed || (expire && isExpired) || !account) {
+	if (!account) {
 		await wait(3 * 1000)
 		c.emit('loaded')
 	} else {
-		usedAccounts.push(account)
 		c.infos.account = account
 		c.country = country
 		c.emit('canRun', account)
 	}
 }
 
-const isWaiting = (props, client) => {
+const isWaiting = async (props, client) => {
 	const { parentId, streamId, max, checkAccount } = props
 
-	const tooManyLoad = Object.values(streams).filter(s => s.parentId === parentId && s.infos && s.infos.other).length > 1
+	// const tooManyLoad = Object.values(streams).filter(s => s.parentId === parentId && s.infos && s.infos.other).length > 1
 	const isMax = Object.values(streams).filter(s => s.parentId === parentId).length >= max
 
-	if (checkAccount || /check/.test(client.parentId) || (!tooManyLoad && !isMax)) {
+	if (checkAccount || /check/.test(client.parentId) || (!waitForLoad && !isMax)) {
+		waitForLoad = true
+
 		client.uniqId = streamId
 		client.parentId = parentId
 		client.max = max
 		client.infos = { streamId, parentId, account: 'loading', time: 'WAIT', other: true }
+
 		client.timeout = setTimeout(() => {
 			exit(client)
 		}, 5 * 60 * 1000);
+
 		streams[streamId] = client
 
 		getAccountNotUsed(client, checkAccount, /check/.test(client.parentId))
 	} else {
+		await wait(3 * 1000)
 		client.emit('loaded')
 	}
 }
@@ -310,7 +294,7 @@ try {
 					exit(client)
 				}, 5 * 60 * 1000);
 			} else if (!/check/.test(parentId)) {
-				gettingAccount = false
+				waitForLoad = false
 			}
 
 			if (!/checklive/.test(parentId) && !back) {
