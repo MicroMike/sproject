@@ -1,5 +1,4 @@
 const {
-	getCheckAccounts,
 	getAccounts,
 	findAccounts,
 	getAccount,
@@ -13,7 +12,6 @@ const { wait } = require('./helpers')
 const express = require("express");
 const mongoose = require('mongoose');
 const { Server } = require("socket.io");
-const _ = require("lodash");
 
 const app = express(); // create express app
 app.use(express.static("build"));
@@ -44,7 +42,8 @@ mongoose.connect(
 	}
 );
 
-let usedAccounts = []
+// let usedAccounts = []
+let allAccounts = []
 let checkAccounts = []
 let plays = 0
 let nexts = 0
@@ -56,7 +55,6 @@ let parents = {}
 let webs = {}
 let used = {}
 let errs = []
-let accounts = []
 
 actions('gain', body => {
 	const r = body.g
@@ -80,16 +78,16 @@ const calcRatio = {}
 const resultRatio = {}
 
 setTimeout(async () => {
-	accounts = await getAccounts(false)
+	allAccounts = await getAccounts(false)
 	checkAccounts = await getAccounts(true)
 }, 1000);
 
 setInterval(async () => {
-	accounts = await getAccounts(false)
+	// accounts = await getAccounts(false)
 	checkAccounts = await getAccounts(true)
 }, 20 * 1000);
 
-setTimeout(() => {
+setInterval(() => {
 	waitForLoad = false
 }, 30 * 1000);
 
@@ -174,12 +172,12 @@ const countByPlayer = (list) => {
 }
 
 const getAllData = () => ({
-	streams: Object.values(accounts).length,
+	streams: Object.values(streams).length,
 	playing: Object.values(streams).filter(s => s.infos).length,
-	used: Object.values(usedAccounts).length,
+	// used: Object.values(usedAccounts).length,
 	webs: Object.values(webs).length,
 	checkLeft: checkAccounts && checkAccounts.length,
-	...countByPlayer(accounts),
+	...countByPlayer(allAccounts),
 	plays: plays * 0.004 * 0.9 + '€ (' + plays + ' / ' + nexts + ') ' + String(nexts / plays * 100).split('.')[0] + '%',
 	gain: gain + '€/min ' + String(gain * 60 * 24).split('.')[0] + '€/jour ' + String(gain * 60 * 24 * 30).split('.')[0] + '€/mois',
 	gain2: gain2 + '€/min ' + String(gain2 * 60 * 24).split('.')[0] + '€/jour ' + String(gain2 * 60 * 24 * 30).split('.')[0] + '€/mois',
@@ -215,6 +213,8 @@ const getAccountNotUsed = async (c, checkAccount, isCheck) => {
 		acc = await getAccount(isCheck)
 	}
 
+	console.log(`${c.parentId} => ${acc}`)
+
 	const { account, country = 'fr' } = acc
 
 	if (!account) {
@@ -249,14 +249,12 @@ const isWaiting = async (props, client) => {
 
 		getAccountNotUsed(client, checkAccount, /check/.test(client.parentId))
 	} else {
-		await wait(3 * 1000)
 		client.emit('loaded')
 	}
 }
 
 const exit = (client) => {
 	if (streams[client.uniqId]) {
-		usedAccounts = usedAccounts.filter(a => a !== client.account)
 		delete streams[client.uniqId]
 		const noMore = Object.values(streams).filter(s => s.parentId === client.parentId).length === 0
 		if (noMore) { delete parents[client.parentId] }
@@ -289,7 +287,6 @@ try {
 			parents[parentId] = { uniqId: parentId, max }
 
 			if (back) {
-				usedAccounts.push(account)
 				client.timeout = setTimeout(() => {
 					exit(client)
 				}, 5 * 60 * 1000);
@@ -384,7 +381,6 @@ try {
 
 		client.on('parent', async ({ parentId, connected, env, max }) => {
 			console.log(parentId + ' => ' + client.id)
-			if (env.CHECK) { checkAccounts = await getCheckAccounts() }
 
 			if (!connected) {
 				Object.values(streams).forEach(s => {
