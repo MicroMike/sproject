@@ -14,7 +14,7 @@ const SAccount = new mongoose.Schema({
 	parent: Boolean,
 	parentId: String,
 	date: Date,
-	expire: Number,
+	expire: { type: Number, default: new Date().getTime() },
 });
 const MAccount = mongoose.model('Account', SAccount, 'accounts');
 
