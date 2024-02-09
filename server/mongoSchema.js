@@ -66,7 +66,7 @@ const getAccount = async (isCheck = false, multi = false, callback) => {
 				a.save()
 			}
 
-			callback(multi ? Ra || [] : a && a.account)
+			callback(multi ? Ra || [] : a)
 		}
 	})
 }
