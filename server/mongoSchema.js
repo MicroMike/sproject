@@ -58,7 +58,7 @@ const getAccount = async (isCheck = false, multi = false, callback) => {
 			if (!multi && a) {
 				const d = new Date()
 				const time = d.getTime()
-				const delay = rand(180, 120) * 60 * 1000
+				const delay = rand(5 * 60, 3 * 60) * 60 * 1000
 
 				const newTime = time + delay
 
