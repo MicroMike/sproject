@@ -240,9 +240,9 @@ const isWaiting = async (props, client) => {
 		client.max = max
 		client.infos = { streamId, parentId, account: 'loading', time: 'WAIT', other: true }
 
-		client.timeout = setTimeout(() => {
-			exit(client)
-		}, 5 * 60 * 1000);
+		// client.timeout = setTimeout(() => {
+		// 	exit(client)
+		// }, 5 * 60 * 1000);
 
 		streams[streamId] = client
 
@@ -286,9 +286,9 @@ try {
 			parents[parentId] = { uniqId: parentId, max }
 
 			if (back) {
-				client.timeout = setTimeout(() => {
-					exit(client)
-				}, 5 * 60 * 1000);
+				// client.timeout = setTimeout(() => {
+				// 	exit(client)
+				// }, 5 * 60 * 1000);
 			} else if (!/check/.test(parentId)) {
 				waitForLoad = false
 			}
