@@ -428,7 +428,6 @@ try {
 
 			serverPlays[parentId] = serverPlays[parentId] ? serverPlays[parentId] + 1 : 1
 			if (streams[streamId] && streams[streamId].infos) {
-				console.log(streams[streamId].account)
 				streams[streamId].infos.countPlays = countPlays
 			}
 
