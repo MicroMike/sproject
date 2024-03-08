@@ -213,15 +213,13 @@ const getAccountNotUsed = async (c, checkAccount, isCheck) => {
 		acc = await getAccount(isCheck)
 	}
 
-	console.log(`${c.parentId} => ${acc}`)
-
 	const { account, country = 'fr' } = acc
 
 	if (!account) {
 		await wait(3 * 1000)
 		c.emit('loaded')
 	} else {
-		console.log('Ready', account)
+		console.log(`${c.parentId} => ${account}`)
 		c.infos.account = account
 		c.country = country
 		c.emit('canRun', account)
@@ -357,12 +355,12 @@ try {
 			}
 
 			if (streams[datas.streamId]) {
-				console.log('playerInfos', streams[datas.streamId].infos, streams[datas.streamId].account)
+				console.log('playerInfos', streams[datas.streamId].account)
 				streams[datas.streamId].infos = { ...datas }
 			}
 			else {
 				streams[datas.streamId] = { uniqId: datas.streamId, parentId: datas.parentId, account: datas.account, infos: { ...datas } }
-				console.log('playerInfos', streams[datas.streamId].infos, streams[datas.streamId].account)
+				console.log('playerInfos', streams[datas.streamId].account)
 			}
 		})
 
@@ -384,13 +382,12 @@ try {
 		})
 
 		client.on('parent', async ({ parentId, connected, env, max }) => {
-			console.log(parentId + ' => ' + client.id)
-
 			if (!connected) {
 				Object.values(streams).forEach(s => {
 					if (s.parentId === parentId) { delete streams[s.id] }
 				})
 			}
+
 			console.log(parentId, 'reconnected', connected)
 
 			client.uniqId = parentId
@@ -431,7 +428,7 @@ try {
 
 			serverPlays[parentId] = serverPlays[parentId] ? serverPlays[parentId] + 1 : 1
 			if (streams[streamId] && streams[streamId].infos) {
-				console.log(streams[streamId].infos, streams[streamId].account)
+				console.log(streams[streamId].account)
 				streams[streamId].infos.countPlays = countPlays
 			}
 
