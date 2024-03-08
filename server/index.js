@@ -221,6 +221,7 @@ const getAccountNotUsed = async (c, checkAccount, isCheck) => {
 		await wait(3 * 1000)
 		c.emit('loaded')
 	} else {
+		console.log('Ready', account)
 		c.infos.account = account
 		c.country = country
 		c.emit('canRun', account)
@@ -350,15 +351,18 @@ try {
 		client.on('playerInfos', datas => {
 			clearTimeout(client.timeout)
 
+
 			if (datas.ok) {
 				delete imgs[datas.streamId];
 			}
 
 			if (streams[datas.streamId]) {
+				console.log('playerInfos', streams[datas.streamId].infos, streams[datas.streamId].account)
 				streams[datas.streamId].infos = { ...datas }
 			}
 			else {
 				streams[datas.streamId] = { uniqId: datas.streamId, parentId: datas.parentId, account: datas.account, infos: { ...datas } }
+				console.log('playerInfos', streams[datas.streamId].infos, streams[datas.streamId].account)
 			}
 		})
 
