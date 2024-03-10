@@ -366,7 +366,7 @@ try {
 		})
 
 		client.on('pause', account => {
-			update(account, 'pause', true)
+			update(account, 'pause', true, () => { })
 		})
 
 		client.on('tidalError', ({ account }) => {
