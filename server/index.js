@@ -6,6 +6,7 @@ const {
 	del,
 	actions,
 } = require('./mongo')
+const { update } = require('./mongoSchema')
 const routes = require('./routes')
 const { wait } = require('./helpers')
 
@@ -362,6 +363,10 @@ try {
 				streams[datas.streamId] = { uniqId: datas.streamId, parentId: datas.parentId, account: datas.account, infos: { ...datas } }
 				// console.log('playerInfos', streams[datas.streamId].account)
 			}
+		})
+
+		client.on('pause', account => {
+			update(account, 'pause', true)
 		})
 
 		client.on('tidalError', ({ account }) => {
