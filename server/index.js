@@ -232,7 +232,7 @@ const isWaiting = async (props, client) => {
 	// const tooManyLoad = Object.values(streams).filter(s => s.parentId === parentId && s.infos && s.infos.other).length > 1
 	const isMax = Object.values(streams).filter(s => s.parentId === parentId).length >= max
 
-	if (checkAccount || /check/.test(client.parentId) || (!waitForLoad && !isMax) || client.infos.time === 'WAIT') {
+	if (checkAccount || /check/.test(client.parentId) || (!waitForLoad && !isMax) || client?.infos?.time === 'WAIT') {
 		waitForLoad = true
 
 		client.uniqId = streamId
