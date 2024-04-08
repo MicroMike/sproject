@@ -58,7 +58,8 @@ const getAccount = async (isCheck = false, multi = false, callback) => {
 			if (!multi && a) {
 				const d = new Date()
 				const time = d.getTime()
-				const delay = rand(5 * 60, 3 * 60) * 60 * 1000
+				const hour = 60 * 60 * 1000
+				const delay = a.account.split(':')[0] === 'youtube' ? rand(28 * hour, 24 * hour) : rand(8 * hour, 4 * hour)
 
 				const newTime = time + delay
 
